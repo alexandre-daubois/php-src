@@ -4901,8 +4901,13 @@ static void zend_compile_return(zend_ast *ast) /* {{{ */
 
 	/* Generator return types are handled separately */
 	if (!is_generator && (CG(active_op_array)->fn_flags & ZEND_ACC_HAS_RETURN_TYPE)) {
-		zend_emit_return_type_check(
-			expr_ast ? &expr_node : NULL, CG(active_op_array)->arg_info - 1, 0);
+        zend_try {
+            zend_emit_return_type_check(
+                expr_ast ? &expr_node : NULL, CG(active_op_array)->arg_info - 1, 0);
+        } zend_catch {
+            zend_hash_del(CG(function_table), CG(active_op_array)->function_name);
+            zend_bailout();
+        } zend_end_try();
 	}
 
 	zend_handle_loops_and_finally((expr_node.op_type & (IS_TMP_VAR | IS_VAR)) ? &expr_node : NULL);
