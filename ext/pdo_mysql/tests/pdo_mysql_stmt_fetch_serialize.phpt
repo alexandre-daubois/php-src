@@ -79,15 +79,14 @@ MySQLPDOTest::skip();
         if (0 != $db->getAttribute(PDO::MYSQL_ATTR_DIRECT_QUERY))
             printf("[002] Unable to turn off emulated prepared statements\n");
 
-        $db->exec('DROP TABLE IF EXISTS test');
-        $db->exec(sprintf('CREATE TABLE test(id INT, myobj BLOB) ENGINE=%s',
+        $db->exec(sprintf('CREATE TABLE test_stmt_fetchserialize(id INT, myobj BLOB) ENGINE=%s',
             MySQLPDOTest::getTableEngine()));
 
         printf("Creating an object, serializing it and writing it to DB...\n");
         $id = 1;
         $obj = myclass::singleton('Creating object');
         $myobj = serialize($obj);
-        $stmt = $db->prepare('INSERT INTO test(id, myobj) VALUES (?, ?)');
+        $stmt = $db->prepare('INSERT INTO test_stmt_fetchserialize(id, myobj) VALUES (?, ?)');
         $stmt->bindValue(1, $id);
         $stmt->bindValue(2, $myobj);
         $stmt->execute();
@@ -96,13 +95,13 @@ MySQLPDOTest::skip();
         var_dump(unserialize($myobj));
 
         printf("\nUsing PDO::FETCH_CLASS|PDO::FETCH_SERIALIZE to fetch the object from DB and unserialize it...\n");
-        $stmt = $db->prepare('SELECT myobj FROM test');
+        $stmt = $db->prepare('SELECT myobj FROM test_stmt_fetchserialize');
         $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_SERIALIZE, 'myclass', array('PDO shall not call __construct()'));
         $stmt->execute();
         var_dump($stmt->fetch());
 
         printf("\nUsing PDO::FETCH_CLASS to fetch the object from DB and unserialize it...\n");
-        $stmt = $db->prepare('SELECT myobj FROM test');
+        $stmt = $db->prepare('SELECT myobj FROM test_stmt_fetchserialize');
         $stmt->setFetchMode(PDO::FETCH_CLASS, 'myclass', array('PDO shall call __construct()'));
         $stmt->execute();
         var_dump($stmt->fetch());
@@ -119,7 +118,7 @@ MySQLPDOTest::skip();
 <?php
 require __DIR__ . '/mysql_pdo_test.inc';
 $db = MySQLPDOTest::factory();
-$db->exec('DROP TABLE IF EXISTS test');
+$db->exec('DROP TABLE IF EXISTS test_stmt_fetchserialize');
 ?>
 --EXPECTF--
 Deprecated: %s implements the Serializable interface, which is deprecated. Implement __serialize() and __unserialize() instead (or in addition, if support for old PHP versions is necessary) in %s on line %d

@@ -53,11 +53,11 @@ unlink($file);
                 return false;
             }
 
-            $db->exec('DROP TABLE IF EXISTS test');
-            $sql = sprintf('CREATE TABLE test(id INT, label BLOB) ENGINE=%s', PDO_MYSQL_TEST_ENGINE);
+            $db->exec('DROP TABLE IF EXISTS test_stmt_blobfromstream');
+            $sql = sprintf('CREATE TABLE test_stmt_blobfromstream(id INT, label BLOB) ENGINE=%s', PDO_MYSQL_TEST_ENGINE);
             $db->exec($sql);
 
-            if (!$stmt = $db->prepare('INSERT INTO test(id, label) VALUES (?, ?)')) {
+            if (!$stmt = $db->prepare('INSERT INTO test_stmt_blobfromstream(id, label) VALUES (?, ?)')) {
                 printf("[%03d + 4] %s\n", $offset, var_export($db->errorInfo(), true));
                 return false;
             }
@@ -84,7 +84,7 @@ unlink($file);
                 return false;
             }
 
-            $stmt2 = $db->query('SELECT id, label FROM test WHERE id = 1');
+            $stmt2 = $db->query('SELECT id, label FROM test_stmt_blobfromstream WHERE id = 1');
             $row = $stmt2->fetch(PDO::FETCH_ASSOC);
             if ($row['label'] != $blob) {
                 printf("[%03d + 8] INSERT and/or SELECT has failed, dumping data.\n", $offset);
@@ -95,14 +95,14 @@ unlink($file);
 
             // Lets test the chr(0) handling in case the streaming has failed:
             // is the bug about chr(0) or the streaming...
-            $db->exec('DELETE FROM test');
-            $stmt = $db->prepare('INSERT INTO test(id, label) VALUES (?, ?)');
+            $db->exec('DELETE FROM test_stmt_blobfromstream');
+            $stmt = $db->prepare('INSERT INTO test_stmt_blobfromstream(id, label) VALUES (?, ?)');
             $stmt->bindParam(1, $id);
             $stmt->bindParam(2, $blob);
             if (true !== $stmt->execute())
                 printf("[%03d + 9] %s\n", $offset, var_export($stmt->errorInfo(), true));
 
-            $stmt2 = $db->query('SELECT id, label FROM test WHERE id = 1');
+            $stmt2 = $db->query('SELECT id, label FROM test_stmt_blobfromstream WHERE id = 1');
             $row = $stmt2->fetch(PDO::FETCH_ASSOC);
             if ($row['label'] != $blob) {
                 printf("[%03d + 10] INSERT and/or SELECT has failed, dumping data.\n", $offset);
@@ -140,7 +140,7 @@ unlink($file);
 <?php
 require __DIR__ . '/mysql_pdo_test.inc';
 $db = MySQLPDOTest::factory();
-$db->exec('DROP TABLE IF EXISTS test');
+$db->exec('DROP TABLE IF EXISTS test_stmt_blobfromstream');
 @unlink(MySQLPDOTest::getTempDir() . DIRECTORY_SEPARATOR . 'pdoblob.tst');
 ?>
 --EXPECT--
