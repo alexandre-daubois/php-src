@@ -24,7 +24,7 @@
  */
 
 /* Temporary variables while this file is being refactored. */
-/** @var ?JUnit */
+/** @var ?JUnit $junit */
 $junit = null;
 
 /* End temporary variables. */
@@ -166,7 +166,7 @@ function main(): void
     global $context_line_count;
 
     // Temporary for the duration of refactoring
-    /** @var JUnit */
+    /** @var JUnit $junit */
     global $junit;
 
     define('IS_WINDOWS', substr(PHP_OS, 0, 3) == "WIN");
@@ -398,15 +398,13 @@ function main(): void
 
             $is_switch = true;
 
-            if ($repeat) {
-                foreach ($cfgtypes as $type) {
-                    if (strpos($switch, '--' . $type) === 0) {
-                        foreach ($cfgfiles as $file) {
-                            if ($switch == '--' . $type . '-' . $file) {
-                                $cfg[$type][$file] = true;
-                                $is_switch = false;
-                                break;
-                            }
+            foreach ($cfgtypes as $type) {
+                if (strpos($switch, '--' . $type) === 0) {
+                    foreach ($cfgfiles as $file) {
+                        if ($switch == '--' . $type . '-' . $file) {
+                            $cfg[$type][$file] = true;
+                            $is_switch = false;
+                            break;
                         }
                     }
                 }
@@ -467,13 +465,11 @@ function main(): void
                 case 'g':
                     $SHOW_ONLY_GROUPS = explode(",", $argv[++$i]);
                     break;
-                //case 'h'
                 case '--keep-all':
                     foreach ($cfgfiles as $file) {
                         $cfg['keep'][$file] = true;
                     }
                     break;
-                //case 'l'
                 case 'm':
                     $valgrind = new RuntestsValgrind($environment);
                     break;
@@ -522,7 +518,6 @@ function main(): void
                     putenv('NO_INTERACTION=1');
                     $environment['NO_INTERACTION'] = 1;
                     break;
-                //case 'r'
                 case 's':
                     $output_file = $argv[++$i];
                     $just_save_results = true;
@@ -596,7 +591,6 @@ function main(): void
                 case '--bless':
                     $bless = true;
                     break;
-                //case 'w'
                 case '-':
                     // repeat check with full switch
                     $switch = $argv[$i];
@@ -683,8 +677,8 @@ function main(): void
     $environment['TEST_PHP_EXECUTABLE_ESCAPED'] = escapeshellarg($php);
     putenv("TEST_PHP_CGI_EXECUTABLE=$php_cgi");
     $environment['TEST_PHP_CGI_EXECUTABLE'] = $php_cgi;
-    putenv("TEST_PHP_CGI_EXECUTABLE_ESCAPED=" . escapeshellarg($php_cgi));
-    $environment['TEST_PHP_CGI_EXECUTABLE_ESCAPED'] = escapeshellarg($php_cgi);
+    putenv("TEST_PHP_CGI_EXECUTABLE_ESCAPED=" . escapeshellarg($php_cgi ?? ''));
+    $environment['TEST_PHP_CGI_EXECUTABLE_ESCAPED'] = escapeshellarg($php_cgi ?? '');
     putenv("TEST_PHPDBG_EXECUTABLE=$phpdbg");
     $environment['TEST_PHPDBG_EXECUTABLE'] = $phpdbg;
     putenv("TEST_PHPDBG_EXECUTABLE_ESCAPED=" . escapeshellarg($phpdbg ?? ''));
@@ -1212,6 +1206,10 @@ function system_with_timeout(
     }
 
     $timeout = $valgrind ? 300 : ($env['TEST_TIMEOUT'] ?? 60);
+    /* ASAN can cause a ~2-3x slowdown. */
+    if (isset($env['SKIP_ASAN'])) {
+        $timeout *= 3;
+    }
 
     while (true) {
         /* hide errors from interrupted syscalls */
@@ -1811,7 +1809,8 @@ function show_file_block(string $file, string $block, ?string $section = null): 
     }
 }
 
-function skip_test(string $tested, string $tested_file, string $shortname, string $reason) {
+function skip_test(string $tested, string $tested_file, string $shortname, string $reason): string
+{
     global $junit;
 
     show_result('SKIP', $tested, $tested_file, "reason: $reason");
@@ -1842,7 +1841,7 @@ function run_test(string $php, $file, array $env): string
     global $show_progress;
 
     // Temporary
-    /** @var JUnit */
+    /** @var JUnit $junit */
     global $junit;
 
     static $skipCache;
@@ -1854,7 +1853,6 @@ function run_test(string $php, $file, array $env): string
     $orig_php = $php;
     $php = escapeshellarg($php);
 
-    $retriable = true;
     $retried = false;
 retry:
 
@@ -1897,7 +1895,6 @@ TEST $file
     $tested = $test->getName();
 
     if ($test->hasSection('FILE_EXTERNAL')) {
-        $retriable = false;
         if ($num_repeats > 1) {
             return skip_test($tested, $tested_file, $shortname, 'Test with FILE_EXTERNAL might not be repeatable');
         }
@@ -1926,7 +1923,6 @@ TEST $file
         }
         $php = escapeshellarg($php_cgi) . ' -C ';
         $uses_cgi = true;
-        $retriable = false;
         if ($num_repeats > 1) {
             return skip_test($tested, $tested_file, $shortname, 'CGI does not support --repeat');
         }
@@ -1944,7 +1940,6 @@ TEST $file
         } else {
             return skip_test($tested, $tested_file, $shortname, 'phpdbg not available');
         }
-        $retriable = false;
         if ($num_repeats > 1) {
             return skip_test($tested, $tested_file, $shortname, 'phpdbg does not support --repeat');
         }
@@ -1952,7 +1947,6 @@ TEST $file
 
     foreach (['CLEAN', 'STDIN', 'CAPTURE_STDIO'] as $section) {
         if ($test->hasSection($section)) {
-            $retriable = false;
             if ($num_repeats > 1) {
                 return skip_test($tested, $tested_file, $shortname, "Test with $section might not be repeatable");
             }
@@ -2148,7 +2142,6 @@ TEST $file
         settings2array(preg_split("/[\n\r]+/", $ini), $ini_settings);
 
         if (isset($ini_settings['opcache.opt_debug_level'])) {
-            $retriable = false;
             if ($num_repeats > 1) {
                 return skip_test($tested, $tested_file, $shortname, 'opt_debug_level tests are not repeatable');
             }
@@ -2207,7 +2200,6 @@ TEST $file
             $junit->markTestAs('SKIP', $shortname, $tested, null, $message);
             return 'SKIPPED';
         }
-
 
         if (!strncasecmp('info', $output, 4) && preg_match('/^info\s*(.+)/i', $output, $m)) {
             $info = " (info: $m[1])";
@@ -2653,7 +2645,7 @@ COMMAND $cmd
 
         $wanted_re = null;
     }
-    if (!$passed && !$retried && $retriable && error_may_be_retried($test, $output)) {
+    if (!$passed && !$retried && error_may_be_retried($test, $output)) {
         $retried = true;
         goto retry;
     }
@@ -2939,8 +2931,7 @@ function generate_diff(string $wanted, ?string $wanted_re, string $output): stri
         $regex = '/^' . expectf_to_regex($expected). '$/s';
         return preg_match($regex, $new);
     });
-    $result = $differ->diff($w, $o);
-    return $result;
+    return $differ->diff($w, $o);
 }
 
 function error(string $message): void
@@ -3362,9 +3353,8 @@ class JUnit
         fwrite($this->fp, $xml);
     }
 
-    private function getSuitesXML(string $suite_name = '')
+    private function getSuitesXML(): string
     {
-        // FIXME: $suite_name gets overwritten
         $result = '';
 
         foreach ($this->suites as $suite_name => $suite) {
@@ -3653,30 +3643,14 @@ class SkipCache
 
         return $result;
     }
-
-//    public function __destruct()
-//    {
-//        echo "Skips: {$this->hits} hits, {$this->misses} misses.\n";
-//        echo "Extensions: {$this->extHits} hits, {$this->extMisses} misses.\n";
-//        echo "Cache distribution:\n";
-//
-//        foreach ($this->skips as $php => $cache) {
-//            echo "$php: " . count($cache) . "\n";
-//        }
-//    }
 }
 
 class RuntestsValgrind
 {
-    protected $version = '';
-    protected $header = '';
-    protected $version_3_8_0 = false;
-    protected $tool = null;
-
-    public function getVersion(): string
-    {
-        return $this->version;
-    }
+    protected string $version;
+    protected string $header;
+    protected bool $version_3_8_0;
+    protected string $tool;
 
     public function getHeader(): string
     {
@@ -3689,7 +3663,7 @@ class RuntestsValgrind
         $header = system_with_timeout("valgrind --tool={$this->tool} --version", $environment);
         if (!$header) {
             error("Valgrind returned no version info for {$this->tool}, cannot proceed.\n".
-                  "Please check if Valgrind is installed and the tool is named correctly.");
+                "Please check if Valgrind is installed and the tool is named correctly.");
         }
         $count = 0;
         $version = preg_replace("/valgrind-(\d+)\.(\d+)\.(\d+)([.\w_-]+)?(\s+)/", '$1.$2.$3', $header, 1, $count);
@@ -3748,17 +3722,6 @@ class TestFile
     public function hasSection(string $name): bool
     {
         return isset($this->sections[$name]);
-    }
-
-    public function hasAllSections(string ...$names): bool
-    {
-        foreach ($names as $section) {
-            if (!isset($this->sections[$section])) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public function hasAnySections(string ...$names): bool
@@ -3985,7 +3948,7 @@ final class Differ
     public const OLD = 0;
     public const ADDED = 1;
     public const REMOVED = 2;
-    private $outputBuilder;
+    private DiffOutputBuilder $outputBuilder;
     private $isEqual;
 
     public function __construct(callable $isEqual)
@@ -4047,8 +4010,6 @@ final class Differ
 
         foreach ($end as $token) {
             $diff[] = [$token, self::OLD];
-            $fromLine++;
-            $toLine++;
         }
 
         return $diff;
@@ -4167,7 +4128,6 @@ class DiffOutputBuilder
     {
         global $context_line_count;
         $i = 0;
-        $string = '';
         $number_len = max(3, strlen((string)count($diffs)));
         $line_number_spec = '%0' . $number_len . 'd';
         $buffer = fopen('php://memory', 'r+b');
@@ -4180,7 +4140,7 @@ class DiffOutputBuilder
                 }
                 $next++;
             }
-            // Found no more differenciating rows, we're done
+            // Found no more differentiating rows, we're done
             if ($next === count($diffs)) {
                 if (($i - 1) < count($diffs)) {
                     fwrite($buffer, "--\n");

@@ -93,27 +93,74 @@ static inline double php_intpow10(int power) {
 /* {{{ php_round_helper
        Actually performs the rounding of a value to integer in a certain mode */
 static inline double php_round_helper(double value, int mode) {
-	double tmp_value;
+	double integral, fractional;
 
-	if (value >= 0.0) {
-		tmp_value = floor(value + 0.5);
-		if ((mode == PHP_ROUND_HALF_DOWN && value == (-0.5 + tmp_value)) ||
-			(mode == PHP_ROUND_HALF_EVEN && value == (0.5 + 2 * floor(tmp_value/2.0))) ||
-			(mode == PHP_ROUND_HALF_ODD  && value == (0.5 + 2 * floor(tmp_value/2.0) - 1.0)))
-		{
-			tmp_value = tmp_value - 1.0;
-		}
-	} else {
-		tmp_value = ceil(value - 0.5);
-		if ((mode == PHP_ROUND_HALF_DOWN && value == (0.5 + tmp_value)) ||
-			(mode == PHP_ROUND_HALF_EVEN && value == (-0.5 + 2 * ceil(tmp_value/2.0))) ||
-			(mode == PHP_ROUND_HALF_ODD  && value == (-0.5 + 2 * ceil(tmp_value/2.0) + 1.0)))
-		{
-			tmp_value = tmp_value + 1.0;
-		}
+	/* Split the input value into the integral and fractional part.
+	 *
+	 * Both parts will have the same sign as the input value. We take
+	 * the absolute value of the fractional part (which will not result
+	 * in branches in the assembly) to make the following cases simpler.
+	 */
+	fractional = fabs(modf(value, &integral));
+
+	switch (mode) {
+		case PHP_ROUND_HALF_UP:
+			if (fractional >= 0.5) {
+				/* We must increase the magnitude of the integral part
+				 * (rounding up / towards infinity). copysign(1.0, integral)
+				 * will either result in 1.0 or -1.0 depending on the sign
+				 * of the input, thus increasing the magnitude, but without
+				 * generating branches in the assembly.
+				 *
+				 * This pattern is equally used for all the other modes.
+				 */
+				return integral + copysign(1.0, integral);
+			}
+
+			return integral;
+
+		case PHP_ROUND_HALF_DOWN:
+			if (fractional > 0.5) {
+				return integral + copysign(1.0, integral);
+			}
+
+			return integral;
+
+		case PHP_ROUND_HALF_EVEN:
+			if (fractional > 0.5) {
+				return integral + copysign(1.0, integral);
+			}
+
+			if (UNEXPECTED(fractional == 0.5)) {
+				bool even = !fmod(integral, 2.0);
+
+				/* If the integral part is not even we can make it even
+				 * by adding one in the direction of the existing sign.
+				 */
+				if (!even) {
+					return integral + copysign(1.0, integral);
+				}
+			}
+
+			return integral;
+		case PHP_ROUND_HALF_ODD:
+			if (fractional > 0.5) {
+				return integral + copysign(1.0, integral);
+			}
+
+			if (UNEXPECTED(fractional == 0.5)) {
+				bool even = !fmod(integral, 2.0);
+
+				if (even) {
+					return integral + copysign(1.0, integral);
+				}
+			}
+
+			return integral;
+		EMPTY_SWITCH_DEFAULT_CASE();
 	}
-
-	return tmp_value;
+	// FIXME: GCC bug, branch is considered reachable.
+	ZEND_UNREACHABLE();
 }
 /* }}} */
 
@@ -213,16 +260,16 @@ PHP_FUNCTION(abs)
 		Z_PARAM_NUMBER(value)
 	ZEND_PARSE_PARAMETERS_END();
 
-	if (Z_TYPE_P(value) == IS_DOUBLE) {
-		RETURN_DOUBLE(fabs(Z_DVAL_P(value)));
-	} else if (Z_TYPE_P(value) == IS_LONG) {
-		if (Z_LVAL_P(value) == ZEND_LONG_MIN) {
-			RETURN_DOUBLE(-(double)ZEND_LONG_MIN);
-		} else {
-			RETURN_LONG(Z_LVAL_P(value) < 0 ? -Z_LVAL_P(value) : Z_LVAL_P(value));
-		}
-	} else {
-		ZEND_ASSERT(0 && "Unexpected type");
+	switch (Z_TYPE_P(value)) {
+		case IS_LONG:
+			if (UNEXPECTED(Z_LVAL_P(value) == ZEND_LONG_MIN)) {
+				RETURN_DOUBLE(-(double)ZEND_LONG_MIN);
+			} else {
+				RETURN_LONG(Z_LVAL_P(value) < 0 ? -Z_LVAL_P(value) : Z_LVAL_P(value));
+			}
+		case IS_DOUBLE:
+			RETURN_DOUBLE(fabs(Z_DVAL_P(value)));
+		EMPTY_SWITCH_DEFAULT_CASE();
 	}
 }
 /* }}} */
@@ -236,12 +283,12 @@ PHP_FUNCTION(ceil)
 		Z_PARAM_NUMBER(value)
 	ZEND_PARSE_PARAMETERS_END();
 
-	if (Z_TYPE_P(value) == IS_DOUBLE) {
-		RETURN_DOUBLE(ceil(Z_DVAL_P(value)));
-	} else if (Z_TYPE_P(value) == IS_LONG) {
-		RETURN_DOUBLE(zval_get_double(value));
-	} else {
-		ZEND_ASSERT(0 && "Unexpected type");
+	switch (Z_TYPE_P(value)) {
+		case IS_LONG:
+			RETURN_DOUBLE(zval_get_double(value));
+		case IS_DOUBLE:
+			RETURN_DOUBLE(ceil(Z_DVAL_P(value)));
+		EMPTY_SWITCH_DEFAULT_CASE();
 	}
 }
 /* }}} */
@@ -255,12 +302,12 @@ PHP_FUNCTION(floor)
 		Z_PARAM_NUMBER(value)
 	ZEND_PARSE_PARAMETERS_END();
 
-	if (Z_TYPE_P(value) == IS_DOUBLE) {
-		RETURN_DOUBLE(floor(Z_DVAL_P(value)));
-	} else if (Z_TYPE_P(value) == IS_LONG) {
-		RETURN_DOUBLE(zval_get_double(value));
-	} else {
-		ZEND_ASSERT(0 && "Unexpected type");
+	switch (Z_TYPE_P(value)) {
+		case IS_LONG:
+			RETURN_DOUBLE(zval_get_double(value));
+		case IS_DOUBLE:
+			RETURN_DOUBLE(floor(Z_DVAL_P(value)));
+		EMPTY_SWITCH_DEFAULT_CASE();
 	}
 }
 /* }}} */
@@ -272,7 +319,6 @@ PHP_FUNCTION(round)
 	int places = 0;
 	zend_long precision = 0;
 	zend_long mode = PHP_ROUND_HALF_UP;
-	double return_val;
 
 	ZEND_PARSE_PARAMETERS_START(1, 3)
 		Z_PARAM_NUMBER(value)
@@ -289,21 +335,29 @@ PHP_FUNCTION(round)
 		}
 	}
 
+	switch (mode) {
+		case PHP_ROUND_HALF_UP:
+		case PHP_ROUND_HALF_DOWN:
+		case PHP_ROUND_HALF_EVEN:
+		case PHP_ROUND_HALF_ODD:
+			break;
+		default:
+			zend_argument_value_error(3, "must be a valid rounding mode (PHP_ROUND_*)");
+			RETURN_THROWS();
+	}
+
 	switch (Z_TYPE_P(value)) {
 		case IS_LONG:
 			/* Simple case - long that doesn't need to be rounded. */
 			if (places >= 0) {
-				RETURN_DOUBLE((double) Z_LVAL_P(value));
+				RETURN_DOUBLE(zval_get_double(value));
 			}
 			ZEND_FALLTHROUGH;
 
 		case IS_DOUBLE:
-			return_val = (Z_TYPE_P(value) == IS_LONG) ? (double)Z_LVAL_P(value) : Z_DVAL_P(value);
-			return_val = _php_math_round(return_val, (int)places, (int)mode);
-			RETURN_DOUBLE(return_val);
-			break;
+			RETURN_DOUBLE(_php_math_round(zval_get_double(value), (int)places, (int)mode));
 
-		EMPTY_SWITCH_DEFAULT_CASE()
+		EMPTY_SWITCH_DEFAULT_CASE();
 	}
 }
 /* }}} */

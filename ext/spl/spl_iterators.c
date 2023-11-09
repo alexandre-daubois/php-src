@@ -1198,7 +1198,7 @@ PHP_METHOD(RecursiveTreeIterator, current)
 	}
 
 	if (object->flags & RTIT_BYPASS_CURRENT) {
-		zend_object_iterator      *iterator = object->iterators[object->level].iterator;
+		zend_object_iterator      *iterator;
 		zval                      *data;
 
 		SPL_FETCH_SUB_ITERATOR(iterator, object);
@@ -1436,14 +1436,8 @@ static spl_dual_it_object* spl_dual_it_construct(INTERNAL_FUNCTION_PARAMETERS, z
 		case DIT_CallbackFilterIterator:
 		case DIT_RecursiveCallbackFilterIterator: {
 			zend_fcall_info fci;
-			if (zend_parse_parameters(ZEND_NUM_ARGS(), "Of", &zobject, ce_inner, &fci, &intern->u.callback_filter) == FAILURE) {
+			if (zend_parse_parameters(ZEND_NUM_ARGS(), "OF", &zobject, ce_inner, &fci, &intern->u.callback_filter) == FAILURE) {
 				return NULL;
-			}
-			if (!ZEND_FCC_INITIALIZED(intern->u.callback_filter)) {
-				/* Call trampoline has been cleared by zpp. Refetch it, because we want to deal
-				 * with it outselves. It is important that it is not refetched on every call,
-				 * because calls may occur from different scopes. */
-				zend_is_callable_ex(&fci.function_name, NULL, IS_CALLABLE_SUPPRESS_DEPRECATIONS, NULL, &intern->u.callback_filter, NULL);
 			}
 			zend_fcc_addref(&intern->u.callback_filter);
 			break;
@@ -1926,7 +1920,7 @@ PHP_METHOD(RegexIterator, accept)
 /* {{{ Returns current regular expression */
 PHP_METHOD(RegexIterator, getRegex)
 {
-	spl_dual_it_object *intern = Z_SPLDUAL_IT_P(ZEND_THIS);
+	spl_dual_it_object *intern;
 
 	if (zend_parse_parameters_none() == FAILURE) {
 		RETURN_THROWS();

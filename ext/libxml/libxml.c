@@ -103,13 +103,49 @@ zend_module_entry libxml_module_entry = {
 
 /* }}} */
 
+static void php_libxml_set_old_ns_list(xmlDocPtr doc, xmlNsPtr first, xmlNsPtr last)
+{
+	if (UNEXPECTED(doc == NULL)) {
+		return;
+	}
+
+	ZEND_ASSERT(last->next == NULL);
+
+	/* Note: we'll use a prepend strategy instead of append to
+	 * make sure we don't lose performance when the list is long.
+	 * As libxml2 could assume the xml node is the first one, we'll place our
+	 * new entries after the first one. */
+
+	if (UNEXPECTED(doc->oldNs == NULL)) {
+		doc->oldNs = (xmlNsPtr) xmlMalloc(sizeof(xmlNs));
+		if (doc->oldNs == NULL) {
+			return;
+		}
+		memset(doc->oldNs, 0, sizeof(xmlNs));
+		doc->oldNs->type = XML_LOCAL_NAMESPACE;
+		doc->oldNs->href = xmlStrdup(XML_XML_NAMESPACE);
+		doc->oldNs->prefix = xmlStrdup((const xmlChar *)"xml");
+	} else {
+		last->next = doc->oldNs->next;
+	}
+	doc->oldNs->next = first;
+}
+
+PHP_LIBXML_API void php_libxml_set_old_ns(xmlDocPtr doc, xmlNsPtr ns)
+{
+	php_libxml_set_old_ns_list(doc, ns, ns);
+}
+
+/* Function pointer typedef changed in 2.9.8, see https://github.com/GNOME/libxml2/commit/e03f0a199a67017b2f8052354cf732b2b4cae787 */
+#if LIBXML_VERSION >= 20908
 static void php_libxml_unlink_entity(void *data, void *table, const xmlChar *name)
+#else
+static void php_libxml_unlink_entity(void *data, void *table, xmlChar *name)
+#endif
 {
 	xmlEntityPtr entity = data;
 	if (entity->_private != NULL) {
-		if (xmlHashLookup(table, name) == entity) {
-			xmlHashRemoveEntry(table, name, NULL);
-		}
+		xmlHashRemoveEntry(table, name, NULL);
 	}
 }
 
@@ -213,8 +249,41 @@ static void php_libxml_node_free(xmlNodePtr node)
 					xmlHashScan(dtd->pentities, php_libxml_unlink_entity, dtd->pentities);
 					/* No unlinking of notations, see remark above at case XML_NOTATION_NODE. */
 				}
-				ZEND_FALLTHROUGH;
+				xmlFreeNode(node);
+				break;
 			}
+			case XML_ELEMENT_NODE:
+				if (node->nsDef && node->doc) {
+					/* Make the namespace declaration survive the destruction of the holding element.
+					 * This prevents a use-after-free on the namespace declaration.
+					 *
+					 * The main problem is that libxml2 doesn't have a reference count on the namespace declaration.
+					 * We don't actually need to save the namespace declaration if we know the subtree it belongs to
+					 * has no references from userland. However, we can't know that without traversing the whole subtree
+					 * (=> slow), or without adding some subtree metadata (=> also slow).
+					 * So we have to assume we need to save everything.
+					 *
+					 * However, namespace declarations are quite rare in comparison to other node types.
+					 * Most node types are either elements, text or attributes.
+					 * And you only need one namespace declaration per namespace (in principle).
+					 * So I expect the number of namespace declarations to be low for an average XML document.
+					 *
+					 * In the worst possible case we have to save all namespace declarations when we for example remove
+					 * the whole document. But given the above reasoning this likely won't be a lot of declarations even
+					 * in the worst case.
+					 * A single declaration only takes about 48 bytes of memory, and I don't expect the worst case to occur
+					 * very often (why would you remove the whole document?).
+					 */
+					xmlNsPtr ns = node->nsDef;
+					xmlNsPtr last = ns;
+					while (last->next) {
+						last = last->next;
+					}
+					php_libxml_set_old_ns_list(node->doc, ns, last);
+					node->nsDef = NULL;
+				}
+				xmlFreeNode(node);
+				break;
 			default:
 				xmlFreeNode(node);
 				break;
@@ -237,8 +306,13 @@ PHP_LIBXML_API void php_libxml_node_free_list(xmlNodePtr node)
 				if (curnode->type == XML_ELEMENT_NODE) {
 					/* This ensures that namespace references in this subtree are defined within this subtree,
 					 * otherwise a use-after-free would be possible when the original namespace holder gets freed. */
+#if 0
 					xmlDOMWrapCtxt dummy_ctxt = {0};
 					xmlDOMWrapReconcileNamespaces(&dummy_ctxt, curnode, /* options */ 0);
+#else
+					/* See php_dom.c */
+					xmlReconciliateNs(curnode->doc, curnode);
+#endif
 				}
 				/* Skip freeing */
 				curnode = next;
@@ -545,19 +619,9 @@ static void _php_list_set_error_structure(xmlErrorPtr error, const char *msg)
 	if (error) {
 		ret = xmlCopyError(error, &error_copy);
 	} else {
-		error_copy.domain = 0;
 		error_copy.code = XML_ERR_INTERNAL_ERROR;
 		error_copy.level = XML_ERR_ERROR;
-		error_copy.line = 0;
-		error_copy.node = NULL;
-		error_copy.int1 = 0;
-		error_copy.int2 = 0;
-		error_copy.ctxt = NULL;
-		error_copy.message = (char*)xmlStrdup((xmlChar*)msg);
-		error_copy.file = NULL;
-		error_copy.str1 = NULL;
-		error_copy.str2 = NULL;
-		error_copy.str3 = NULL;
+		error_copy.message = (char*)xmlStrdup((const xmlChar*)msg);
 		ret = 0;
 	}
 
@@ -720,10 +784,12 @@ is_string:
 	if (ret == NULL) {
 		if (resource == NULL) {
 			if (ID == NULL) {
-				ID = "NULL";
+				php_libxml_ctx_error(context,
+						"Failed to load external entity because the resolver function returned null\n");
+			} else {
+				php_libxml_ctx_error(context,
+						"Failed to load external entity \"%s\"\n", ID);
 			}
-			php_libxml_ctx_error(context,
-					"Failed to load external entity \"%s\"\n", ID);
 		} else {
 			/* we got the resource in the form of a string; open it */
 			ret = xmlNewInputFromFile(context, resource);
@@ -1115,7 +1181,7 @@ PHP_FUNCTION(libxml_set_external_entity_loader)
 	zend_fcall_info_cache	fcc;
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
-		Z_PARAM_FUNC_OR_NULL(fci, fcc)
+		Z_PARAM_FUNC_NO_TRAMPOLINE_FREE_OR_NULL(fci, fcc)
 	ZEND_PARSE_PARAMETERS_END();
 
 	/* Unset old callback if it's defined */
@@ -1123,12 +1189,6 @@ PHP_FUNCTION(libxml_set_external_entity_loader)
 		zend_fcc_dtor(&LIBXML(entity_loader_callback));
 	}
 	if (ZEND_FCI_INITIALIZED(fci)) { /* argument not null */
-		if (!ZEND_FCC_INITIALIZED(fcc)) {
-			zend_is_callable_ex(&fci.function_name, NULL, IS_CALLABLE_SUPPRESS_DEPRECATIONS, NULL, &fcc, NULL);
-			/* Call trampoline has been cleared by zpp. Refetch it, because we want to deal
-			 * with it outselves. It is important that it is not refetched on every call,
-			 * because calls may occur from different scopes. */
-		}
 		zend_fcc_dup(&LIBXML(entity_loader_callback), &fcc);
 	}
 	RETURN_TRUE;
@@ -1227,13 +1287,7 @@ PHP_LIBXML_API int php_libxml_increment_node_ptr(php_libxml_node_object *object,
 				object->node->_private = private_data;
 			}
 		} else {
-			if (UNEXPECTED(node->type == XML_DOCUMENT_NODE || node->type == XML_HTML_DOCUMENT_NODE)) {
-				php_libxml_doc_ptr *doc_ptr = emalloc(sizeof(php_libxml_doc_ptr));
-				doc_ptr->cache_tag.modification_nr = 1; /* iterators start at 0, such that they will start in an uninitialised state */
-				object->node = (php_libxml_node_ptr *) doc_ptr; /* downcast */
-			} else {
-				object->node = emalloc(sizeof(php_libxml_node_ptr));
-			}
+			object->node = emalloc(sizeof(php_libxml_node_ptr));
 			ret_refcount = 1;
 			object->node->node = node;
 			object->node->refcount = 1;
@@ -1278,6 +1332,7 @@ PHP_LIBXML_API int php_libxml_increment_doc_ref(php_libxml_node_object *object, 
 		object->document->ptr = docp;
 		object->document->refcount = ret_refcount;
 		object->document->doc_props = NULL;
+		object->document->cache_tag.modification_nr = 1; /* iterators start at 0, such that they will start in an uninitialised state */
 	}
 
 	return ret_refcount;

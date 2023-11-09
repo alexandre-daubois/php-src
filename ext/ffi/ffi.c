@@ -24,6 +24,7 @@
 #include "php_scandir.h"
 #include "zend_exceptions.h"
 #include "zend_closures.h"
+#include "zend_weakrefs.h"
 #include "main/SAPI.h"
 
 #include <ffi.h>
@@ -739,6 +740,16 @@ static zend_always_inline zend_result zend_ffi_zval_to_cdata(void *ptr, zend_ffi
 	zend_string *str;
 	zend_ffi_type_kind kind = type->kind;
 
+	/* Pointer type has special handling of CData */
+	if (kind != ZEND_FFI_TYPE_POINTER && Z_TYPE_P(value) == IS_OBJECT && Z_OBJCE_P(value) == zend_ffi_cdata_ce) {
+		zend_ffi_cdata *cdata = (zend_ffi_cdata*)Z_OBJ_P(value);
+		if (zend_ffi_is_compatible_type(type, ZEND_FFI_TYPE(cdata->type)) &&
+			type->size == ZEND_FFI_TYPE(cdata->type)->size) {
+			memcpy(ptr, cdata->ptr, type->size);
+			return SUCCESS;
+		}
+	}
+
 again:
 	switch (kind) {
 		case ZEND_FFI_TYPE_FLOAT:
@@ -848,14 +859,7 @@ again:
 		case ZEND_FFI_TYPE_STRUCT:
 		case ZEND_FFI_TYPE_ARRAY:
 		default:
-			if (Z_TYPE_P(value) == IS_OBJECT && Z_OBJCE_P(value) == zend_ffi_cdata_ce) {
-				zend_ffi_cdata *cdata = (zend_ffi_cdata*)Z_OBJ_P(value);
-				if (zend_ffi_is_compatible_type(type, ZEND_FFI_TYPE(cdata->type)) &&
-				    type->size == ZEND_FFI_TYPE(cdata->type)->size) {
-					memcpy(ptr, cdata->ptr, type->size);
-					return SUCCESS;
-				}
-			}
+			/* Incompatible types, because otherwise the CData check at the entry point would've succeeded. */
 			zend_ffi_assign_incompatible(value, type);
 			return FAILURE;
 	}
@@ -973,7 +977,7 @@ static void zend_ffi_callback_trampoline(ffi_cif* cif, void* ret, void** args, v
 	free_alloca(fci.params, use_heap);
 
 	if (EG(exception)) {
-		zend_error(E_ERROR, "Throwing from FFI callbacks is not allowed");
+		zend_error_noreturn(E_ERROR, "Throwing from FFI callbacks is not allowed");
 	}
 
 	ret_type = ZEND_FFI_TYPE(callback_data->type->func.ret_type);
@@ -2198,6 +2202,10 @@ static void zend_ffi_ctype_free_obj(zend_object *object) /* {{{ */
 	zend_ffi_ctype *ctype = (zend_ffi_ctype*)object;
 
 	zend_ffi_type_dtor(ctype->type);
+
+    if (UNEXPECTED(GC_FLAGS(object) & IS_OBJ_WEAKLY_REFERENCED)) {
+        zend_weakrefs_notify(object);
+    }
 }
 /* }}} */
 
@@ -2423,6 +2431,10 @@ static void zend_ffi_free_obj(zend_object *object) /* {{{ */
 		zend_hash_destroy(ffi->tags);
 		efree(ffi->tags);
 	}
+
+    if (UNEXPECTED(GC_FLAGS(object) & IS_OBJ_WEAKLY_REFERENCED)) {
+        zend_weakrefs_notify(object);
+    }
 }
 /* }}} */
 
@@ -2431,6 +2443,10 @@ static void zend_ffi_cdata_free_obj(zend_object *object) /* {{{ */
 	zend_ffi_cdata *cdata = (zend_ffi_cdata*)object;
 
 	zend_ffi_cdata_dtor(cdata);
+
+    if (UNEXPECTED(GC_FLAGS(object) & IS_OBJ_WEAKLY_REFERENCED)) {
+        zend_weakrefs_notify(object);
+    }
 }
 /* }}} */
 

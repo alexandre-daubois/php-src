@@ -17,7 +17,7 @@ dnl Basic autoconf initialization, generation of config.nice.
 dnl ----------------------------------------------------------------------------
 
 AC_PREREQ([2.68])
-AC_INIT([PHP],[8.3.0-dev],[https://github.com/php/php-src/issues],[php],[https://www.php.net])
+AC_INIT([PHP],[8.4.0-dev],[https://github.com/php/php-src/issues],[php],[https://www.php.net])
 AC_CONFIG_SRCDIR([main/php_version.h])
 AC_CONFIG_AUX_DIR([build])
 AC_PRESERVE_HELP_ORDER
@@ -377,11 +377,7 @@ AC_CHECK_LIB(m, sin)
 
 case $host_alias in
   riscv64*)
-    AC_CHECK_LIB(atomic, __atomic_exchange_1, [
-      PHP_ADD_LIBRARY(atomic)
-    ], [
-      AC_MSG_ERROR([Problem with enabling atomic. Please check config.log for details.])
-    ])
+    PHP_CHECK_FUNC(__atomic_exchange_1, atomic)
     ;;
 esac
 
@@ -408,7 +404,6 @@ fcntl.h \
 grp.h \
 ieeefp.h \
 langinfo.h \
-linux/filter.h \
 linux/sock_diag.h \
 malloc.h \
 os/signpost.h \
@@ -498,6 +493,8 @@ PHP_CHECK_STDINT_TYPES
 
 dnl Check __builtin_expect
 PHP_CHECK_BUILTIN_EXPECT
+dnl Check __builtin_unreachable
+PHP_CHECK_BUILTIN_UNREACHABLE
 dnl Check __builtin_clz
 PHP_CHECK_BUILTIN_CLZ
 dnl Check __builtin_clzl
@@ -612,7 +609,6 @@ getgrnam_r \
 getpwuid_r \
 getwd \
 glob \
-inet_ntoa \
 inet_ntop \
 inet_pton \
 localtime_r \
@@ -648,8 +644,10 @@ asprintf \
 nanosleep \
 memmem \
 memrchr \
-strerror_r \
 )
+
+dnl Check for strerror_r, and if its a POSIX-compatible or a GNU specific version.
+AC_FUNC_STRERROR_R
 
 AX_FUNC_WHICH_GETHOSTBYNAME_R
 
@@ -1699,7 +1697,8 @@ PHP_INSTALL_HEADERS([Zend/Optimizer], [ \
     zend_func_info.h \
     zend_inference.h \
     zend_optimizer.h \
-    zend_ssa.h])
+    zend_ssa.h \
+    zend_worklist.h])
 
 PHP_ADD_SOURCES(TSRM, TSRM.c, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 

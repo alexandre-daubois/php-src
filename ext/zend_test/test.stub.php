@@ -53,6 +53,8 @@ namespace {
         public function returnsThrowable(): Throwable {}
 
         static public function variadicTest(string|Iterator ...$elements) : static {}
+
+        public function takesUnionType(stdclass|Iterator $arg): void {}
     }
 
     class _ZendTestChildClass extends _ZendTestClass
@@ -60,16 +62,35 @@ namespace {
         public function returnsThrowable(): Exception {}
     }
 
+    class ZendAttributeTest {
+        /** @var int */
+        #[ZendTestRepeatableAttribute]
+        #[ZendTestRepeatableAttribute]
+        public const TEST_CONST = 1;
+
+        /** @var mixed */
+        #[ZendTestRepeatableAttribute]
+        #[ZendTestPropertyAttribute("testProp")]
+        public $testProp;
+
+        #[ZendTestAttribute]
+        public function testMethod(): bool {}
+    }
+
     trait _ZendTestTrait {
         /** @var mixed */
         public $testProp;
+        public Traversable|Countable $classUnionProp;
 
         public function testMethod(): bool {}
     }
 
     #[Attribute(Attribute::TARGET_ALL)]
     final class ZendTestAttribute {
+    }
 
+    #[Attribute(Attribute::TARGET_ALL|Attribute::IS_REPEATABLE)]
+    final class ZendTestRepeatableAttribute {
     }
 
     #[Attribute(Attribute::TARGET_PARAMETER)]
@@ -104,6 +125,12 @@ namespace {
         ): int {}
     }
 
+    class ZendTestClassWithPropertyAttribute {
+        // this attribute must be added internally in MINIT
+        #[ZendTestAttribute]
+        public string $attributed;
+    }
+
     final class ZendTestForbidDynamicCall {
         public function call(): void {}
         public static function callStatic(): void {}
@@ -116,7 +143,7 @@ namespace {
 
     enum ZendTestStringEnum: string {
         case Foo = "Test1";
-        case Bar = "Test2";
+        case Bar = 'Test2';
         case Baz = "Test2\\a";
         case FortyTwo = "42";
     }
@@ -227,6 +254,11 @@ namespace ZendTestNS {
         public function method(): ?UnlikelyCompileError {}
     }
 
+    class NotUnlikelyCompileError {
+        /* This method signature would create a compile error due to the string
+         * "ZendTestNS\NotUnlikelyCompileError" in the generated macro call */
+        public function method(): ?NotUnlikelyCompileError {}
+    }
 }
 
 namespace ZendTestNS2 {

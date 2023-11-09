@@ -766,7 +766,7 @@ class DateObjectError extends DateError
 /**
  * @strict-properties
  */
-class DateRangeError extends DateRangeError
+class DateRangeError extends DateError
 {
 }
 
@@ -780,7 +780,7 @@ class DateException extends Exception
 /**
  * @strict-properties
  */
-class DateInvalidTimeZoneException extends Exception
+class DateInvalidTimeZoneException extends DateException
 {
 }
 

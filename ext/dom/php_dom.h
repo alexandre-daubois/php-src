@@ -128,7 +128,6 @@ void php_dom_throw_error_with_message(int error_code, char *error_message, int s
 void node_list_unlink(xmlNodePtr node);
 int dom_check_qname(char *qname, char **localname, char **prefix, int uri_len, int name_len);
 xmlNsPtr dom_get_ns(xmlNodePtr node, char *uri, int *errorcode, char *prefix);
-void dom_set_old_ns(xmlDoc *doc, xmlNs *ns);
 void dom_reconcile_ns(xmlDocPtr doc, xmlNodePtr nodep);
 void dom_reconcile_ns_list(xmlDocPtr doc, xmlNodePtr nodep, xmlNodePtr last);
 xmlNsPtr dom_get_nsdecl(xmlNode *node, xmlChar *localName);
@@ -152,6 +151,8 @@ zend_string *dom_node_concatenated_name_helper(size_t name_len, const char *name
 zend_string *dom_node_get_node_name_attribute_or_element(const xmlNode *nodep);
 bool php_dom_is_node_connected(const xmlNode *node);
 bool php_dom_adopt_node(xmlNodePtr nodep, dom_object *dom_object_new_document, xmlDocPtr new_document);
+xmlNsPtr dom_get_ns_resolve_prefix_conflict(xmlNodePtr tree, const char *uri);
+void php_dom_reconcile_attribute_namespace_after_insertion(xmlAttrPtr attrp);
 
 /* parentnode */
 void dom_parent_node_prepend(dom_object *context, zval *nodes, uint32_t nodesc);
@@ -188,19 +189,10 @@ int php_dom_get_nodelist_length(dom_object *obj);
 	__ptr = (__prtype)((php_libxml_node_ptr *)__intern->ptr)->node; \
 }
 
-#define DOM_NO_ARGS() \
-	if (zend_parse_parameters_none() == FAILURE) { \
-		RETURN_THROWS(); \
-	}
-
-#define DOM_NOT_IMPLEMENTED() \
-	zend_throw_error(NULL, "Not yet implemented"); \
-	RETURN_THROWS();
-
 #define DOM_NODELIST 0
 #define DOM_NAMEDNODEMAP 1
 
-static zend_always_inline bool php_dom_is_cache_tag_stale_from_doc_ptr(const php_libxml_cache_tag *cache_tag, const php_libxml_doc_ptr *doc_ptr)
+static zend_always_inline bool php_dom_is_cache_tag_stale_from_doc_ptr(const php_libxml_cache_tag *cache_tag, const php_libxml_ref_obj *doc_ptr)
 {
 	ZEND_ASSERT(cache_tag != NULL);
 	ZEND_ASSERT(doc_ptr != NULL);
@@ -215,15 +207,26 @@ static zend_always_inline bool php_dom_is_cache_tag_stale_from_doc_ptr(const php
 static zend_always_inline bool php_dom_is_cache_tag_stale_from_node(const php_libxml_cache_tag *cache_tag, const xmlNodePtr node)
 {
 	ZEND_ASSERT(node != NULL);
-	return !node->doc || !node->doc->_private || php_dom_is_cache_tag_stale_from_doc_ptr(cache_tag, node->doc->_private);
+	php_libxml_node_ptr *private = node->_private;
+	if (!private) {
+		return true;
+	}
+	php_libxml_node_object *object_private = private->_private;
+	if (!object_private || !object_private->document) {
+		return true;
+	}
+	return php_dom_is_cache_tag_stale_from_doc_ptr(cache_tag, object_private->document);
 }
 
 static zend_always_inline void php_dom_mark_cache_tag_up_to_date_from_node(php_libxml_cache_tag *cache_tag, const xmlNodePtr node)
 {
 	ZEND_ASSERT(cache_tag != NULL);
-	if (node->doc && node->doc->_private) {
-		const php_libxml_doc_ptr* doc_ptr = node->doc->_private;
-		cache_tag->modification_nr = doc_ptr->cache_tag.modification_nr;
+	php_libxml_node_ptr *private = node->_private;
+	if (private) {
+		php_libxml_node_object *object_private = private->_private;
+		if (object_private->document) {
+			cache_tag->modification_nr = object_private->document->cache_tag.modification_nr;
+		}
 	}
 }
 

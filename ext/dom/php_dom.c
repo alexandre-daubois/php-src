@@ -32,10 +32,6 @@
 #define PHP_XPATH 1
 #define PHP_XPTR 2
 
-/* libxml2 doesn't expose this constant as part of their public API.
- * See xmlDOMReconcileNSOptions in tree.c */
-#define PHP_LIBXML2_DOM_RECONNS_REMOVEREDUND (1 << 0)
-
 /* {{{ class entries */
 PHP_DOM_EXPORT zend_class_entry *dom_node_class_entry;
 PHP_DOM_EXPORT zend_class_entry *dom_domexception_class_entry;
@@ -96,8 +92,8 @@ static zend_object *dom_objects_namespace_node_new(zend_class_entry *class_type)
 static void dom_object_namespace_node_free_storage(zend_object *object);
 static xmlNodePtr php_dom_create_fake_namespace_decl_node_ptr(xmlNodePtr nodep, xmlNsPtr original);
 
-typedef int (*dom_read_t)(dom_object *obj, zval *retval);
-typedef int (*dom_write_t)(dom_object *obj, zval *newval);
+typedef zend_result (*dom_read_t)(dom_object *obj, zval *retval);
+typedef zend_result (*dom_write_t)(dom_object *obj, zval *newval);
 
 typedef struct _dom_prop_handler {
 	dom_read_t read_func;
@@ -972,11 +968,6 @@ void dom_xpath_objects_free_storage(zend_object *object)
 void dom_objects_free_storage(zend_object *object)
 {
 	dom_object *intern = php_dom_obj_from_obj(object);
-#if defined(__GNUC__) && __GNUC__ >= 3
-	int retcount __attribute__((unused)); /* keep compiler quiet */
-#else
-	int retcount;
-#endif
 
 	zend_object_std_dtor(&intern->std);
 
@@ -985,7 +976,7 @@ void dom_objects_free_storage(zend_object *object)
 			php_libxml_node_decrement_resource((php_libxml_node_object *) intern);
 		} else {
 			php_libxml_decrement_node_ptr((php_libxml_node_object *) intern);
-			retcount = php_libxml_decrement_doc_ref((php_libxml_node_object *)intern);
+			php_libxml_decrement_doc_ref((php_libxml_node_object *) intern);
 		}
 		intern->ptr = NULL;
 	}
@@ -1436,35 +1427,6 @@ void dom_normalize (xmlNodePtr nodep)
 }
 /* }}} end dom_normalize */
 
-
-/* {{{ void dom_set_old_ns(xmlDoc *doc, xmlNs *ns) */
-void dom_set_old_ns(xmlDoc *doc, xmlNs *ns) {
-	if (doc == NULL)
-		return;
-
-	ZEND_ASSERT(ns->next == NULL);
-
-	/* Note: we'll use a prepend strategy instead of append to
-	 * make sure we don't lose performance when the list is long.
-	 * As libxml2 could assume the xml node is the first one, we'll place our
-	 * new entries after the first one. */
-
-	if (doc->oldNs == NULL) {
-		doc->oldNs = (xmlNsPtr) xmlMalloc(sizeof(xmlNs));
-		if (doc->oldNs == NULL) {
-			return;
-		}
-		memset(doc->oldNs, 0, sizeof(xmlNs));
-		doc->oldNs->type = XML_LOCAL_NAMESPACE;
-		doc->oldNs->href = xmlStrdup(XML_XML_NAMESPACE);
-		doc->oldNs->prefix = xmlStrdup((const xmlChar *)"xml");
-	} else {
-		ns->next = doc->oldNs->next;
-	}
-	doc->oldNs->next = ns;
-}
-/* }}} end dom_set_old_ns */
-
 static void dom_reconcile_ns_internal(xmlDocPtr doc, xmlNodePtr nodep, xmlNodePtr search_parent)
 {
 	xmlNsPtr nsptr, nsdftptr, curns, prevns = NULL;
@@ -1486,7 +1448,7 @@ static void dom_reconcile_ns_internal(xmlDocPtr doc, xmlNodePtr nodep, xmlNodePt
 					/* Note: we can't get here if the ns is already on the oldNs list.
 					 * This is because in that case the definition won't be on the node, and
 					 * therefore won't be in the nodep->nsDef list. */
-					dom_set_old_ns(doc, curns);
+					php_libxml_set_old_ns(doc, curns);
 					curns = prevns;
 				}
 			}
@@ -1496,18 +1458,40 @@ static void dom_reconcile_ns_internal(xmlDocPtr doc, xmlNodePtr nodep, xmlNodePt
 	}
 }
 
+void php_dom_reconcile_attribute_namespace_after_insertion(xmlAttrPtr attrp)
+{
+	ZEND_ASSERT(attrp != NULL);
+
+	if (attrp->ns != NULL) {
+		/* Try to link to an existing namespace. If that won't work, reconcile. */
+		xmlNodePtr nodep = attrp->parent;
+		xmlNsPtr matching_ns = xmlSearchNs(nodep->doc, nodep, attrp->ns->prefix);
+		if (matching_ns && xmlStrEqual(matching_ns->href, attrp->ns->href)) {
+			attrp->ns = matching_ns;
+		} else {
+			xmlReconciliateNs(nodep->doc, nodep);
+		}
+	}
+}
+
 static void dom_libxml_reconcile_ensure_namespaces_are_declared(xmlNodePtr nodep)
 {
+	/* Ideally we'd use the DOM-wrapped version, but we cannot: https://github.com/php/php-src/pull/12308. */
+#if 0
 	/* Put on stack to avoid allocation.
 	 * Although libxml2 currently does not use this for the reconciliation, it still
 	 * makes sense to do this just in case libxml2's internal change in the future. */
 	xmlDOMWrapCtxt dummy_ctxt = {0};
-	bool remove_redundant = nodep->nsDef == NULL && nodep->ns != NULL;
-	xmlDOMWrapReconcileNamespaces(&dummy_ctxt, nodep, /* options */ remove_redundant ? PHP_LIBXML2_DOM_RECONNS_REMOVEREDUND : 0);
+	xmlDOMWrapReconcileNamespaces(&dummy_ctxt, nodep, /* options */ 0);
+#else
+	xmlReconciliateNs(nodep->doc, nodep);
+#endif
 }
 
 void dom_reconcile_ns(xmlDocPtr doc, xmlNodePtr nodep) /* {{{ */
 {
+	ZEND_ASSERT(nodep->type != XML_ATTRIBUTE_NODE);
+
 	/* Although the node type will be checked by the libxml2 API,
 	 * we still want to do the internal reconciliation conditionally. */
 	if (nodep->type == XML_ELEMENT_NODE) {
@@ -1586,6 +1570,35 @@ int dom_check_qname(char *qname, char **localname, char **prefix, int uri_len, i
 }
 /* }}} */
 
+/* Creates a new namespace declaration with a random prefix with the given uri on the tree.
+ * This is used to resolve a namespace prefix conflict in cases where spec does not want a
+ * namespace error in case of conflicts, but demands a resolution. */
+xmlNsPtr dom_get_ns_resolve_prefix_conflict(xmlNodePtr tree, const char *uri)
+{
+	ZEND_ASSERT(tree != NULL);
+	xmlDocPtr doc = tree->doc;
+
+	if (UNEXPECTED(doc == NULL)) {
+		return NULL;
+	}
+
+	/* Code adapted from libxml2 (2.10.4) */
+	char prefix[50];
+	int counter = 1;
+	snprintf(prefix, sizeof(prefix), "default");
+	xmlNsPtr nsptr = xmlSearchNs(doc, tree, (const xmlChar *) prefix);
+	while (nsptr != NULL) {
+		if (counter > 1000) {
+			return NULL;
+		}
+		snprintf(prefix, sizeof(prefix), "default%d", counter++);
+		nsptr = xmlSearchNs(doc, tree, (const xmlChar *) prefix);
+	}
+
+	/* Search yielded no conflict */
+	return xmlNewNs(tree, (const xmlChar *) uri, (const xmlChar *) prefix);
+}
+
 /*
 http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#ID-DocCrElNS
 
@@ -1603,28 +1616,21 @@ xmlNsPtr dom_get_ns(xmlNodePtr nodep, char *uri, int *errorcode, char *prefix) {
 	if (! ((prefix && !strcmp (prefix, "xml") && strcmp(uri, (char *)XML_XML_NAMESPACE)) ||
 		   (prefix && !strcmp (prefix, "xmlns") && strcmp(uri, (char *)DOM_XMLNS_NAMESPACE)) ||
 		   (prefix && !strcmp(uri, (char *)DOM_XMLNS_NAMESPACE) && strcmp (prefix, "xmlns")))) {
-		/* Reuse the old namespaces from doc->oldNs if possible, before creating a new one.
-		 * This will prevent the oldNs list from growing with duplicates. */
-		xmlDocPtr doc = nodep->doc;
-		if (doc && doc->oldNs != NULL) {
-			nsptr = doc->oldNs;
-			do {
-				if (xmlStrEqual(nsptr->prefix, (xmlChar *)prefix) && xmlStrEqual(nsptr->href, (xmlChar *)uri)) {
-					goto out;
-				}
-				nsptr = nsptr->next;
-			} while (nsptr);
-		}
-		/* Couldn't reuse one, create a new one. */
 		nsptr = xmlNewNs(nodep, (xmlChar *)uri, (xmlChar *)prefix);
 		if (UNEXPECTED(nsptr == NULL)) {
-			goto err;
+			/* Either memory allocation failure, or it's because of a prefix conflict.
+			 * We'll assume a conflict and try again. If it was a memory allocation failure we'll just fail again, whatever.
+			 * This isn't needed for every caller (such as createElementNS & DOMElement::__construct), but isn't harmful and simplifies the mental model "when do I use which function?".
+			 * This branch will also be taken unlikely anyway as in those cases it'll be for allocation failure. */
+			nsptr = dom_get_ns_resolve_prefix_conflict(nodep, uri);
+			if (UNEXPECTED(nsptr == NULL)) {
+				goto err;
+			}
 		}
 	} else {
 		goto err;
 	}
 
-out:
 	*errorcode = 0;
 	return nsptr;
 err:

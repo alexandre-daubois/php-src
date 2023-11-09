@@ -1035,7 +1035,7 @@ PHP_FUNCTION(implode)
 
 	if (pieces == NULL) {
 		if (arg1_array == NULL) {
-			zend_type_error("%s(): Argument #1 ($pieces) must be of type array, string given", get_active_function_name());
+			zend_type_error("%s(): Argument #1 ($array) must be of type array, string given", get_active_function_name());
 			RETURN_THROWS();
 		}
 
@@ -1289,7 +1289,7 @@ PHP_FUNCTION(str_decrement)
 		}
 	} while (carry && position-- > 0);
 
-	if (UNEXPECTED(carry || ZSTR_VAL(decremented)[0] == '0')) {
+	if (UNEXPECTED(carry || (ZSTR_VAL(decremented)[0] == '0' && ZSTR_LEN(decremented) > 1))) {
 		if (ZSTR_LEN(decremented) == 1) {
 			zend_string_release_ex(decremented, /* persistent */ false);
 			zend_argument_value_error(1, "\"%s\" is out of decrement range", ZSTR_VAL(str));
@@ -1596,39 +1596,53 @@ PHPAPI char *php_stristr(char *s, char *t, size_t s_len, size_t t_len)
 }
 /* }}} */
 
-/* {{{ php_strspn */
-PHPAPI size_t php_strspn(const char *s1, const char *s2, const char *s1_end, const char *s2_end)
+static size_t php_strspn_strcspn_common(const char *haystack, const char *characters, const char *haystack_end, const char *characters_end, bool must_match)
 {
-	const char *p = s1, *spanp;
-	char c = *p;
-
-cont:
-	for (spanp = s2; p != s1_end && spanp != s2_end;) {
-		if (*spanp++ == c) {
-			c = *(++p);
-			goto cont;
+	/* Fast path for short strings.
+	 * The table lookup cannot be faster in this case because we not only have to compare, but also build the table.
+	 * We only compare in this case.
+	 * Empirically tested that the table lookup approach is only beneficial if characters is longer than 1 character. */
+	if (characters_end - characters == 1) {
+		const char *ptr = haystack;
+		while (ptr < haystack_end && (*ptr == *characters) == must_match) {
+			ptr++;
 		}
+		return ptr - haystack;
 	}
-	return (p - s1);
+
+	/* Every character in characters will set a boolean in this lookup table.
+	 * We'll use the lookup table as a fast lookup for the characters in characters while looping over haystack. */
+	bool table[256];
+	/* Use multiple small memsets to inline the memset with intrinsics, trick learned from glibc. */
+	memset(table, 0, 64);
+	memset(table + 64, 0, 64);
+	memset(table + 128, 0, 64);
+	memset(table + 192, 0, 64);
+
+	while (characters < characters_end) {
+		table[(unsigned char) *characters] = true;
+		characters++;
+	}
+
+	const char *ptr = haystack;
+	while (ptr < haystack_end && table[(unsigned char) *ptr] == must_match) {
+		ptr++;
+	}
+
+	return ptr - haystack;
+}
+
+/* {{{ php_strspn */
+PHPAPI size_t php_strspn(const char *haystack, const char *characters, const char *haystack_end, const char *characters_end)
+{
+	return php_strspn_strcspn_common(haystack, characters, haystack_end, characters_end, true);
 }
 /* }}} */
 
 /* {{{ php_strcspn */
-PHPAPI size_t php_strcspn(const char *s1, const char *s2, const char *s1_end, const char *s2_end)
+PHPAPI size_t php_strcspn(const char *haystack, const char *characters, const char *haystack_end, const char *characters_end)
 {
-	const char *p, *spanp;
-	char c = *s1;
-
-	for (p = s1;;) {
-		spanp = s2;
-		do {
-			if (*spanp == c || p == s1_end) {
-				return p - s1;
-			}
-		} while (spanp++ < (s2_end - 1));
-		c = *++p;
-	}
-	/* NOTREACHED */
+	return php_strspn_strcspn_common(haystack, characters, haystack_end, characters_end, false);
 }
 /* }}} */
 
@@ -1656,7 +1670,7 @@ PHP_FUNCTION(stristr)
 	if (part) {
 		RETURN_STRINGL(ZSTR_VAL(haystack), found_offset);
 	}
-	RETURN_STRINGL(ZSTR_VAL(haystack) + found_offset, ZSTR_LEN(haystack) - found_offset);
+	RETURN_STRINGL(found, ZSTR_LEN(haystack) - found_offset);
 }
 /* }}} */
 
@@ -1684,7 +1698,7 @@ PHP_FUNCTION(strstr)
 	if (part) {
 		RETURN_STRINGL(ZSTR_VAL(haystack), found_offset);
 	}
-	RETURN_STRINGL(ZSTR_VAL(haystack) + found_offset, ZSTR_LEN(haystack) - found_offset);
+	RETURN_STRINGL(found, ZSTR_LEN(haystack) - found_offset);
 }
 /* }}} */
 
@@ -1934,10 +1948,13 @@ PHP_FUNCTION(strrchr)
 	zend_string *haystack, *needle;
 	const char *found = NULL;
 	zend_long found_offset;
+	bool part = 0;
 
-	ZEND_PARSE_PARAMETERS_START(2, 2)
+	ZEND_PARSE_PARAMETERS_START(2, 3)
 		Z_PARAM_STR(haystack)
 		Z_PARAM_STR(needle)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_BOOL(part)
 	ZEND_PARSE_PARAMETERS_END();
 
 	found = zend_memrchr(ZSTR_VAL(haystack), *ZSTR_VAL(needle), ZSTR_LEN(haystack));
@@ -1945,6 +1962,9 @@ PHP_FUNCTION(strrchr)
 		RETURN_FALSE;
 	}
 	found_offset = found - ZSTR_VAL(haystack);
+	if (part) {
+		RETURN_STRINGL(ZSTR_VAL(haystack), found_offset);
+	}
 	RETURN_STRINGL(found, ZSTR_LEN(haystack) - found_offset);
 }
 /* }}} */
@@ -3173,19 +3193,17 @@ PHP_FUNCTION(strtr)
 	char *to = NULL;
 	size_t to_len = 0;
 
-	ZEND_PARSE_PARAMETERS_START(2, 3)
-		Z_PARAM_STR(str)
-		Z_PARAM_ARRAY_HT_OR_STR(from_ht, from_str)
-		Z_PARAM_OPTIONAL
-		Z_PARAM_STRING_OR_NULL(to, to_len)
-	ZEND_PARSE_PARAMETERS_END();
-
-	if (!to && from_ht == NULL) {
-		zend_argument_type_error(2, "must be of type array, string given");
-		RETURN_THROWS();
-	} else if (to && from_str == NULL) {
-		zend_argument_type_error(2, "must be of type string, array given");
-		RETURN_THROWS();
+	if (ZEND_NUM_ARGS() <= 2) {
+		ZEND_PARSE_PARAMETERS_START(2, 2)
+			Z_PARAM_STR(str)
+			Z_PARAM_ARRAY_HT(from_ht)
+		ZEND_PARSE_PARAMETERS_END();
+	} else {
+		ZEND_PARSE_PARAMETERS_START(3, 3)
+			Z_PARAM_STR(str)
+			Z_PARAM_STR(from_str)
+			Z_PARAM_STRING(to, to_len)
+		ZEND_PARSE_PARAMETERS_END();
 	}
 
 	/* shortcut for empty string */
