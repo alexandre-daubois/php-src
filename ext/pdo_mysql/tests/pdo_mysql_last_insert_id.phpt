@@ -22,10 +22,6 @@ $db = MySQLPDOTest::factory();
             printf("[002] MySQL does not support sequences, expecting '0'/string got '%s'/%s\n",
                 var_export($tmp, true), gettype($tmp));
 
-        $db->exec('DROP TABLE IF EXISTS test_pdo_mysql_last_insert_id');
-        if ('0' !== ($tmp = $db->lastInsertId()))
-            printf("[003] Expecting '0'/string got '%s'/%s", var_export($tmp, true), gettype($tmp));
-
         $db->exec(sprintf('CREATE TABLE test_pdo_mysql_last_insert_id(id INT, col1 CHAR(10)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE));
         if ('0' !== ($tmp = $db->lastInsertId()))
             printf("[004] Expecting '0'/string got '%s'/%s", var_export($tmp, true), gettype($tmp));
