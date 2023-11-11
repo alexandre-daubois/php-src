@@ -37,7 +37,6 @@ MySQLPDOTest::skip();
     /* affected rows related */
     try {
 
-        exec_and_count(2, $db, 'DROP TABLE IF EXISTS test_mysql_exec_select', 0);
         exec_and_count(3, $db, sprintf('CREATE TABLE test_mysql_exec_select(id INT NOT NULL PRIMARY KEY, col1 CHAR(10)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE), 0);
         exec_and_count(4, $db, "INSERT INTO test_mysql_exec_select(id, col1) VALUES (1, 'a')", 1);
         // question is: will the result set be cleaned up, will it be possible to run more queries on the line?
