@@ -45,7 +45,6 @@ if (MySQLPDOTest::isPDOMySQLnd())
                 printf("[%03d] id = %d, val = %s... (length: %d)\n",
                     $offset, $id, substr($val, 0, 10), strlen($val));
             }
-            $db->exec('DROP TABLE IF EXISTS test_attr_max_buffer_size');
 
         } catch (PDOException $e) {
             printf("[%03d] %s, [%s] %s\n",
