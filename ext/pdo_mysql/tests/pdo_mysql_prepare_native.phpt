@@ -157,10 +157,10 @@ $db = MySQLPDOTest::factory();
         if (count(($tmp = $stmt->fetchAll(PDO::FETCH_ASSOC))) != 0)
             printf("[019] '1' IS NOT NULL evaluates to true, expecting zero rows, got %d rows\n", $tmp);
 
-        prepex(20, $db, 'DROP TABLE IF EXISTS test_prepare_native');
-        prepex(21, $db, 'CREATE TABLE test_prepare_native(id INT, label CHAR(255)) ENGINE=MyISAM');
-        // Not every MySQL Server version supports this
-        if (is_object(prepex(22, $db, 'CREATE FULLTEXT INDEX idx1 ON test_prepare_native(label)', null, null, true))) {
+            prepex(20, $db, 'DROP TABLE IF EXISTS test_prepare_native');
+            prepex(21, $db, 'CREATE TABLE test_prepare_native(id INT, label CHAR(255)) ENGINE=MyISAM');
+            // Not every MySQL Server version supports this
+            if (is_object(prepex(22, $db, 'CREATE FULLTEXT INDEX idx1 ON test_prepare_native(label)', null, null, true))) {
             prepex(23, $db, 'INSERT INTO test_prepare_native(id, label) VALUES (1, :placeholder)',
                 array(':placeholder' => 'MySQL is the best database in the world!'));
             prepex(24, $db, 'INSERT INTO test_prepare_native(id, label) VALUES (2, :placeholder)',
@@ -185,8 +185,7 @@ $db = MySQLPDOTest::factory();
         }
 
         $db->exec('DELETE FROM test_prepare_native');
-        $db->exec("INSERT INTO test_prepare_native(id, label) VALUES (1, 'row1')");
-        $db->exec("INSERT INTO test_prepare_native(id, label) VALUES (2, 'row2')");
+        $db->exec("INSERT INTO test_prepare_native(id, label) VALUES (1, 'row1'), (2, 'row2')");
 
         $sql = sprintf("SELECT id, label FROM test_prepare_native WHERE (label LIKE %s) AND (id = :placeholder)",
             $db->quote('%ro%'));
