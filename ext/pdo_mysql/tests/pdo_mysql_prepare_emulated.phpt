@@ -152,8 +152,7 @@ $db = MySQLPDOTest::factory();
         if (count(($tmp = $stmt->fetchAll(PDO::FETCH_ASSOC))) != 0)
             printf("[026] '1' IS NOT NULL evaluates to true, expecting zero rows, got %d rows\n", $tmp);
 
-        prepex(27, $db, 'DROP TABLE IF EXISTS test_prepare_emulated');
-        prepex(28, $db, 'CREATE TABLE test_prepare_emulated(id INT, label CHAR(255)) ENGINE=MyISAM');
+        prepex(20, $db, 'DELETE FROM test_prepare_emulated');
         if (is_object(prepex(29, $db, 'CREATE FULLTEXT INDEX idx1 ON test_prepare_emulated(label)'))) {
             prepex(30, $db, 'INSERT INTO test_prepare_emulated(id, label) VALUES (1, :placeholder)',
                 array(':placeholder' => 'MySQL is the best database in the world!'));
