@@ -13,7 +13,6 @@ if (!MySQLPDOTest::isPDOMySQLnd()) die('skip only for mysqlnd');
 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'mysql_pdo_test.inc');
 $pdo = MySQLPDOTest::factory();
 
-$tbl = "test";
 $pdo->query("CREATE TABLE test_75177 (`bit` bit(8)) ENGINE=InnoDB");
 $pdo->query("INSERT INTO test_75177 (`bit`) VALUES (1), (0b011), (0b01100)");
 
