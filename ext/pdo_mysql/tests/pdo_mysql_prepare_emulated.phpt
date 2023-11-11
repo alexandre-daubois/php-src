@@ -200,8 +200,7 @@ $db = MySQLPDOTest::factory();
                 printf("[044] Expecting onw row, got %d rows\n", $tmp);
 
         // and now, the same with anonymous placeholders...
-        prepex(45, $db, 'DROP TABLE IF EXISTS test_prepare_emulated');
-        prepex(46, $db, sprintf('CREATE TABLE test_prepare_emulated(id INT, label CHAR(255)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE));
+        prepex(34, $db, 'DELETE FROM test_prepare_emulated');
         prepex(47, $db, "INSERT INTO test_prepare_emulated(id, label) VALUES(1, '?')");
         $stmt = prepex(48, $db, 'SELECT label FROM test_prepare_emulated');
         var_dump($stmt->fetchAll(PDO::FETCH_ASSOC));
