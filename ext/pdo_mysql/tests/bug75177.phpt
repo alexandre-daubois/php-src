@@ -16,9 +16,7 @@ $pdo = MySQLPDOTest::factory();
 $tbl = "test";
 $pdo->query("DROP TABLE IF EXISTS test_75177");
 $pdo->query("CREATE TABLE test_75177 (`bit` bit(8)) ENGINE=InnoDB");
-$pdo->query("INSERT INTO test_75177 (`bit`) VALUES (1)");
-$pdo->query("INSERT INTO test_75177 (`bit`) VALUES (0b011)");
-$pdo->query("INSERT INTO test_75177 (`bit`) VALUES (0b01100)");
+$pdo->query("INSERT INTO test_75177 (`bit`) VALUES (1), (0b011), (0b01100)");
 
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 $ret = $pdo->query("SELECT * FROM test_75177")->fetchAll();
