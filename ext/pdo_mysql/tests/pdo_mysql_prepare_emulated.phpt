@@ -100,7 +100,6 @@ $db = MySQLPDOTest::factory();
         $stmt = prepex(4, $db, 'SELECT 1 as "one"');
         var_dump($stmt->fetch(PDO::FETCH_ASSOC));
 
-        prepex(5, $db, 'DROP TABLE IF EXISTS test_prepare_emulated');
         prepex(6, $db, sprintf('CREATE TABLE test_prepare_emulated(id INT, label CHAR(255)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE));
         prepex(7, $db, "INSERT INTO test_prepare_emulated(id, label) VALUES(1, ':placeholder')");
         $stmt = prepex(8, $db, 'SELECT label FROM test_prepare_emulated');
