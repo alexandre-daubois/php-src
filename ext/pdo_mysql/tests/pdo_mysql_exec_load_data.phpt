@@ -66,7 +66,6 @@ if (($row = $stmt->fetch(PDO::FETCH_ASSOC)) && ($row['value'] != '')) {
 
     /* affected rows related */
 
-    exec_and_count(2, $db, 'DROP TABLE IF EXISTS test_mysql_exec_load_data', 0);
     exec_and_count(3, $db, sprintf('CREATE TABLE test_mysql_exec_load_data(id INT NOT NULL PRIMARY KEY, col1 CHAR(10)) ENGINE=%s', PDO_MYSQL_TEST_ENGINE), 0);
 
     $stmt = $db->query("SHOW VARIABLES LIKE 'secure_file_priv'");
