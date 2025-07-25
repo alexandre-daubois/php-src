@@ -591,6 +591,41 @@ PHP_FUNCTION(is_nan)
 }
 /* }}} */
 
+/* {{{ Returns whether argument is a safe integer (within -(2^53-1) to 2^53-1) */
+PHP_FUNCTION(is_integer_safe)
+{
+	zval *value;
+
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_NUMBER(value)
+	ZEND_PARSE_PARAMETERS_END();
+
+	switch (Z_TYPE_P(value)) {
+		case IS_LONG:
+			zend_long lval = Z_LVAL_P(value);
+			const zend_long max_safe = 9007199254740991LL;
+			const zend_long min_safe = -9007199254740991LL;
+			RETURN_BOOL(lval >= min_safe && lval <= max_safe);
+
+		case IS_DOUBLE:
+			double dval = Z_DVAL_P(value);
+			if (!zend_finite(dval) || zend_isnan(dval)) {
+				RETURN_FALSE;
+			}
+			if (dval != floor(dval)) {
+				RETURN_FALSE;
+			}
+			const double max_safe = 9007199254740991.0;
+			const double min_safe = -9007199254740991.0;
+			RETURN_BOOL(dval >= min_safe && dval <= max_safe);
+
+		default:
+			ZEND_UNREACHABLE();
+			break;
+	}
+}
+/* }}} */
+
 /* {{{ Returns base raised to the power of exponent. Returns integer result when possible */
 PHP_FUNCTION(pow)
 {

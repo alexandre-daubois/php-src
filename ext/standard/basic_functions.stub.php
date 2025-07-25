@@ -3205,6 +3205,9 @@ function intdiv(int $num1, int $num2): int {}
 function is_infinite(float $num): bool {}
 
 /** @compile-time-eval */
+function is_integer_safe(int|float $num): bool {}
+
+/** @compile-time-eval */
 function pow(mixed $num, mixed $exponent): int|float|object {}
 
 /** @compile-time-eval */

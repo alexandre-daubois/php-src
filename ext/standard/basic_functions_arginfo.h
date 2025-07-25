@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: dcc4e6865dac52b23534b6ef61c0d6be766af6b9 */
+ * Stub hash: f2345c447c16f920c4365b6e4c27aa3c0b2b41ab */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_set_time_limit, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, seconds, IS_LONG, 0)
@@ -1663,6 +1663,10 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_is_infinite arginfo_is_finite
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_is_integer_safe, 0, 1, _IS_BOOL, 0)
+	ZEND_ARG_TYPE_MASK(0, num, MAY_BE_LONG|MAY_BE_DOUBLE, NULL)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_pow, 0, 2, MAY_BE_LONG|MAY_BE_DOUBLE|MAY_BE_OBJECT)
 	ZEND_ARG_TYPE_INFO(0, num, IS_MIXED, 0)
 	ZEND_ARG_TYPE_INFO(0, exponent, IS_MIXED, 0)
@@ -2738,6 +2742,7 @@ ZEND_FUNCTION(is_finite);
 ZEND_FUNCTION(is_nan);
 ZEND_FUNCTION(intdiv);
 ZEND_FUNCTION(is_infinite);
+ZEND_FUNCTION(is_integer_safe);
 ZEND_FUNCTION(pow);
 ZEND_FUNCTION(exp);
 ZEND_FUNCTION(log);
@@ -3342,6 +3347,7 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_RAW_FENTRY("is_nan", zif_is_nan, arginfo_is_nan, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
 	ZEND_RAW_FENTRY("intdiv", zif_intdiv, arginfo_intdiv, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
 	ZEND_RAW_FENTRY("is_infinite", zif_is_infinite, arginfo_is_infinite, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
+	ZEND_RAW_FENTRY("is_integer_safe", zif_is_integer_safe, arginfo_is_integer_safe, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
 	ZEND_RAW_FENTRY("pow", zif_pow, arginfo_pow, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
 	ZEND_RAW_FENTRY("exp", zif_exp, arginfo_exp, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
 	ZEND_RAW_FENTRY("log", zif_log, arginfo_log, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
