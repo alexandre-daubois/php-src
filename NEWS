@@ -47,6 +47,9 @@ PHP                                                                        NEWS
 - OpenSSL:
   . Add $digest_algo parameter to openssl_public_encrypt() and
     openssl_private_decrypt() functions. (Jakub Zelenka)
+  . Implement GH-19134: Add more INI options to control OpenSSL verification:
+    openssl.allow_self_signed, openssl.verify_peer, openssl.verify_peer_name.
+    (alexandre-daubois)
 
 - POSIX:
   . posix_kill and posix_setpgid throws a ValueError on invalid process_id.

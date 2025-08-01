@@ -567,10 +567,24 @@ static zend_result php_openssl_apply_peer_verification_policy(SSL *ssl, X509 *pe
 	must_verify_peer = GET_VER_OPT("verify_peer")
 		? zend_is_true(val)
 		: sslsock->is_client;
+	
+	if (!GET_VER_OPT("verify_peer")) {
+		zend_string *ini_value = zend_ini_str("openssl.verify_peer", sizeof("openssl.verify_peer")-1, 0);
+		if (ini_value) {
+			must_verify_peer = zend_ini_parse_bool(ini_value);
+		}
+	}
 
 	must_verify_peer_name = GET_VER_OPT("verify_peer_name")
 		? zend_is_true(val)
 		: sslsock->is_client;
+		
+	if (!GET_VER_OPT("verify_peer_name")) {
+		zend_string *ini_value = zend_ini_str("openssl.verify_peer_name", sizeof("openssl.verify_peer_name")-1, 0);
+		if (ini_value) {
+			must_verify_peer_name = zend_ini_parse_bool(ini_value);
+		}
+	}
 
 	must_verify_fingerprint = GET_VER_OPT("peer_fingerprint");
 	peer_fingerprint = val;
@@ -589,8 +603,15 @@ static zend_result php_openssl_apply_peer_verification_policy(SSL *ssl, X509 *pe
 				break;
 			case X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT:
 				if (GET_VER_OPT("allow_self_signed") && zend_is_true(val)) {
-					/* allowed */
+					/* allowed by context option */
 					break;
+				} else if (!GET_VER_OPT("allow_self_signed")) {
+					/* check INI setting */
+					zend_string *ini_value = zend_ini_str("openssl.allow_self_signed", sizeof("openssl.allow_self_signed")-1, 0);
+					if (ini_value && zend_ini_parse_bool(ini_value)) {
+						/* allowed by INI setting */
+						break;
+					}
 				}
 				/* not allowed, so fall through */
 				ZEND_FALLTHROUGH;
@@ -779,10 +800,22 @@ static int php_openssl_win_cert_verify_callback(X509_STORE_CTX *x509_store_ctx, 
 
 		if (chain_policy_status.dwError != 0) {
 			/* The chain does not match the policy */
-			if (is_self_signed && chain_policy_status.dwError == CERT_E_UNTRUSTEDROOT
-				&& GET_VER_OPT("allow_self_signed") && zend_is_true(val)) {
-				/* allow self-signed certs */
-				X509_STORE_CTX_set_error(x509_store_ctx, X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT);
+			if (is_self_signed && chain_policy_status.dwError == CERT_E_UNTRUSTEDROOT) {
+				bool allow_self_signed = false;
+				if (GET_VER_OPT("allow_self_signed") && zend_is_true(val)) {
+					allow_self_signed = true;
+				} else if (!GET_VER_OPT("allow_self_signed")) {
+					zend_string *ini_value = zend_ini_str("openssl.allow_self_signed", sizeof("openssl.allow_self_signed")-1, 0);
+					if (ini_value) {
+						allow_self_signed = zend_ini_parse_bool(ini_value);
+					}
+				}
+				if (allow_self_signed) {
+					/* allow self-signed certs */
+					X509_STORE_CTX_set_error(x509_store_ctx, X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT);
+				} else {
+					RETURN_CERT_VERIFY_FAILURE(SSL_R_CERTIFICATE_VERIFY_FAILED);
+				}
 			} else {
 				RETURN_CERT_VERIFY_FAILURE(SSL_R_CERTIFICATE_VERIFY_FAILED);
 			}
