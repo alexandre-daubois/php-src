@@ -16,7 +16,6 @@
 
 #include "php.h"
 #include "crc32.h"
-#include "crc32_x86.h"
 
 #ifdef HAVE_AARCH64_CRC32
 #ifndef PHP_WIN32

@@ -19,8 +19,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-
 #ifdef DBA_DB4
 #include "php_db4.h"
 #include <sys/stat.h>

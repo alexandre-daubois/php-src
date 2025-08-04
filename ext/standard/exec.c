@@ -19,25 +19,12 @@
 #include "php.h"
 #include <ctype.h>
 #include "php_string.h"
-#include "ext/standard/file.h"
 #include "basic_functions.h"
 #include "exec.h"
 #include "SAPI.h"
 
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
-#endif
-
-#include <signal.h>
-
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
-#endif
-#ifdef HAVE_FCNTL_H
-#include <fcntl.h>
 #endif
 
 #ifdef HAVE_UNISTD_H

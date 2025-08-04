@@ -18,8 +18,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-
 #ifdef DBA_FLATFILE
 #include "php_flatfile.h"
 

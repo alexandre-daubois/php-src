@@ -30,9 +30,6 @@
 FILE_RCSID("@(#)$File: apptype.c,v 1.17 2022/12/26 17:31:14 christos Exp $")
 #endif /* lint */
 
-#include <stdlib.h>
-#include <string.h>
-
 #ifdef __EMX__
 #include <io.h>
 #define INCL_DOSSESMGR

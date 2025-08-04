@@ -17,13 +17,8 @@
    +----------------------------------------------------------------------+
 */
 
-#include <stdlib.h>
-
 #include "php.h"
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #if PHP_USE_PHP_CRYPT_R
 # include "php_crypt_r.h"
 # include "crypt_freesec.h"

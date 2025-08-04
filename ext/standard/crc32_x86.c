@@ -17,8 +17,6 @@
   |  V. Gopal, E. Ozturk, et al., 2009, http://intel.ly/2ySEwL0          |
 */
 
-#include "crc32_x86.h"
-
 #if defined(ZEND_INTRIN_SSE4_2_PCLMUL_NATIVE) || defined(ZEND_INTRIN_SSE4_2_PCLMUL_RESOLVER)
 # include <nmmintrin.h>
 # include <wmmintrin.h>

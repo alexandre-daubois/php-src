@@ -18,8 +18,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-
 #ifdef DBA_DBM
 #include "php_dbm.h"
 

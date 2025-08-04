@@ -20,9 +20,6 @@
 #include "php_globals.h"
 
 #include <time.h>
-#ifdef HAVE_SYS_TIME_H
-# include <sys/time.h>
-#endif
 
 #ifdef HAVE_STRPTIME
 #ifndef HAVE_DECL_STRPTIME

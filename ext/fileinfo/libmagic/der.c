@@ -42,8 +42,6 @@ FILE_RCSID("@(#)$File: der.c,v 1.28 2024/11/25 22:31:53 christos Exp $")
 #define CAST(a, b) ((a)(b))
 #endif
 
-#include <sys/types.h>
-
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>

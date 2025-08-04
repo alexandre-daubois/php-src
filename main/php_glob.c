@@ -91,7 +91,6 @@
 #include "php.h"
 #include <sys/stat.h>
 
-#include <ctype.h>
 #ifndef PHP_WIN32
 #include <sys/param.h>
 #include <dirent.h>
@@ -101,7 +100,6 @@
 #include <errno.h>
 #include <limits.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 

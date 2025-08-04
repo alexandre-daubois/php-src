@@ -58,7 +58,6 @@
  *	by now.  The code requires a 32-bit integer type, though.
  */
 
-#include <sys/types.h>
 #include <string.h>
 
 #ifdef TEST

@@ -22,11 +22,8 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 
-#include "SAPI.h"
-
 #ifdef HAVE_LIBDL
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #ifdef PHP_WIN32
 #include "win32/param.h"

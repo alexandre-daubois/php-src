@@ -18,8 +18,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-
 #ifdef DBA_LMDB
 #include "php_lmdb.h"
 

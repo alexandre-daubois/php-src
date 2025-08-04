@@ -41,9 +41,7 @@ FILE_RCSID("@(#)$File: ascmagic.c,v 1.116 2023/05/21 16:08:50 christos Exp $")
 #include "magic.h"
 #include <string.h>
 #include <ctype.h>
-#include <stdlib.h>
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>
 #endif
 
 #define MAXLINELEN 300	/* longest sane line length */

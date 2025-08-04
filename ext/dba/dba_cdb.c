@@ -19,8 +19,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-
 #ifdef DBA_CDB
 #include "php_cdb.h"
 

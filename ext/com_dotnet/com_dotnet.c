@@ -18,8 +18,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-
 #ifdef HAVE_MSCOREE_H
 # include "php_ini.h"
 # include "ext/standard/info.h"

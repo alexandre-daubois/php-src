@@ -17,7 +17,6 @@
 #include "../fpm_config.h"
 #include "../fpm_events.h"
 #include "../fpm.h"
-#include "../zlog.h"
 
 #ifdef HAVE_EPOLL
 

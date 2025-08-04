@@ -18,8 +18,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-
 #ifdef DBA_DB2
 #include "php_db2.h"
 #include <sys/stat.h>

@@ -18,8 +18,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-#include "php_bz2.h"
 #include "bz2_arginfo.h"
 
 #ifdef HAVE_BZ2

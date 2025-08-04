@@ -18,8 +18,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-
 #ifdef HAVE_BCMATH
 
 #include "php_ini.h"

@@ -34,7 +34,6 @@ FILE_RCSID("@(#)$File: cdf_time.c,v 1.25 2024/11/25 21:24:59 christos Exp $")
 #ifdef TEST
 #include <err.h>
 #endif
-#include <string.h>
 
 #include "cdf.h"
 

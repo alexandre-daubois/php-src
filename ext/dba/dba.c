@@ -19,8 +19,6 @@
 #include <config.h>
 #endif
 
-#include "php.h"
-
 #ifdef HAVE_DBA
 
 #include "php_ini.h"

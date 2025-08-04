@@ -28,7 +28,6 @@
 #define HOWMANY 65536
 #endif
 
-#include "php_ini.h"
 #include "ext/standard/info.h"
 #include "ext/standard/file.h" /* needed for context stuff */
 #include "php_fileinfo.h"

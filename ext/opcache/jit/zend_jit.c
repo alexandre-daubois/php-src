@@ -16,20 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-#include "main/php.h"
-#include "main/SAPI.h"
 #include "php_version.h"
-#include <ZendAccelerator.h>
-#include "zend_shared_alloc.h"
-#include "Zend/zend_execute.h"
-#include "Zend/zend_vm.h"
-#include "Zend/zend_exceptions.h"
-#include "Zend/zend_constants.h"
-#include "Zend/zend_closures.h"
-#include "Zend/zend_ini.h"
-#include "Zend/zend_observer.h"
-#include "zend_smart_str.h"
-#include "jit/zend_jit.h"
 
 #ifdef HAVE_JIT
 
