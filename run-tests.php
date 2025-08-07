@@ -691,8 +691,10 @@ function main(): void
     verify_config($php);
     write_information($user_tests, $phpdbg);
 
+    $exts_tested = $exts_to_test;
+    $exts_skipped = [];
+
     if ($test_cnt) {
-        putenv('NO_INTERACTION=1');
         usort($test_files, "test_sort");
         $start_time = hrtime(true);
 
@@ -721,12 +723,12 @@ function main(): void
 
         if ($output_file != '' && $just_save_results) {
             save_results($output_file, /* prompt_to_save_results: */ false);
+        } else {
+            save_results($output_file, /* prompt_to_save_results: */ true);
         }
     } else {
         // Compile a list of all test files (*.phpt).
         $test_files = [];
-        $exts_tested = $exts_to_test;
-        $exts_skipped = [];
         sort($exts_to_test);
 
         foreach (['Zend', 'tests', 'ext', 'sapi'] as $dir) {
