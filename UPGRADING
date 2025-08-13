@@ -53,6 +53,7 @@ PHP 8.5 UPGRADE NOTES
   . Applying #[\Attribute] to an abstract class, enum, interface, or trait triggers
     an error during compilation. Previously, the attribute could be added, but when
     ReflectionAttribute::newInstance() was called an error would be thrown.
+  . The disable_classes INI setting has been removed.
 
 - DOM:
   . Cloning a DOMNamedNodeMap, DOMNodeList, Dom\NamedNodeMap, Dom\NodeList,

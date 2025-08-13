@@ -56,8 +56,6 @@ static const char HARDCODED_INI[] =
 	",crypt"
 	/* openlog() has a known memory-management issue. */
 	",openlog"
-	/* Can cause long loops that bypass the executor step limit. */
-	"\ndisable_classes=InfiniteIterator"
 ;
 
 static int startup(sapi_module_struct *sapi_module)
