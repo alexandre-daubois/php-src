@@ -259,6 +259,11 @@ const T_GOTO = UNKNOWN;
 const T_FUNCTION = UNKNOWN;
 /**
  * @var int
+ * @cvalue T_OPERATOR
+ */
+const T_OPERATOR = UNKNOWN;
+/**
+ * @var int
  * @cvalue T_FN
  */
 const T_FN = UNKNOWN;

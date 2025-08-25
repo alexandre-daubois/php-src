@@ -34,6 +34,81 @@ ZEND_VM_HELPER(zend_add_helper, ANY, ANY, zval *op_1, zval *op_2)
 	if (UNEXPECTED(Z_TYPE_INFO_P(op_2) == IS_UNDEF)) {
 		op_2 = ZVAL_UNDEFINED_OP2();
 	}
+	
+	/* Check for operator overloading */
+	if (Z_TYPE_P(op_1) == IS_OBJECT || Z_TYPE_P(op_2) == IS_OBJECT) {
+		zend_class_entry *ce = NULL;
+		zend_function *op_func = NULL;
+		zend_string *op_name = zend_string_init("+", 1, 0);
+		
+		/* Check left operand class first */
+		if (Z_TYPE_P(op_1) == IS_OBJECT) {
+			ce = Z_OBJCE_P(op_1);
+			op_func = zend_hash_find_ptr(&ce->function_table, op_name);
+			if (op_func && (op_func->common.fn_flags & ZEND_ACC_OPERATOR)) {
+				goto call_operator;
+			}
+		}
+		
+		/* Check right operand class */
+		if (Z_TYPE_P(op_2) == IS_OBJECT && !op_func) {
+			ce = Z_OBJCE_P(op_2);
+			op_func = zend_hash_find_ptr(&ce->function_table, op_name);
+			if (op_func && (op_func->common.fn_flags & ZEND_ACC_OPERATOR)) {
+				goto call_operator;
+			}
+		}
+		
+		if (op_func) {
+call_operator:
+			{
+				zval retval;
+				zval params[2];
+				zend_fcall_info fci;
+				zend_fcall_info_cache fcc;
+				
+				ZVAL_COPY(&params[0], op_1);
+				ZVAL_COPY(&params[1], op_2);
+				
+				fci.size = sizeof(fci);
+				fci.object = NULL;
+				ZVAL_STR(&fci.function_name, zend_string_copy(op_name));
+				fci.retval = &retval;
+				fci.param_count = 2;
+				fci.params = params;
+				fci.named_params = NULL;
+				
+				fcc.function_handler = op_func;
+				fcc.calling_scope = ce;
+				fcc.called_scope = ce;
+				fcc.object = NULL;
+				
+				/* Call the static operator method directly */
+				if (zend_call_function(&fci, &fcc) == SUCCESS) {
+					ZVAL_COPY_VALUE(EX_VAR(opline->result.var), &retval);
+				} else {
+					ZVAL_UNDEF(EX_VAR(opline->result.var));
+				}
+				
+				zval_ptr_dtor(&params[0]);
+				zval_ptr_dtor(&params[1]);
+				zval_ptr_dtor(&fci.function_name);
+				zend_string_release(op_name);
+				
+				if (OP1_TYPE & (IS_TMP_VAR|IS_VAR)) {
+					zval_ptr_dtor_nogc(op_1);
+				}
+				if (OP2_TYPE & (IS_TMP_VAR|IS_VAR)) {
+					zval_ptr_dtor_nogc(op_2);
+				}
+				ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
+			}
+		}
+		
+		zend_string_release(op_name);
+	}
+
+	/* default add */
 	add_function(EX_VAR(opline->result.var), op_1, op_2);
 	if (OP1_TYPE & (IS_TMP_VAR|IS_VAR)) {
 		zval_ptr_dtor_nogc(op_1);

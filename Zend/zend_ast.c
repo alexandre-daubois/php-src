@@ -1738,6 +1738,7 @@ static ZEND_COLD void zend_ast_export_stmt(smart_str *str, zend_ast *ast, int in
 			case ZEND_AST_FOREACH:
 			case ZEND_AST_FUNC_DECL:
 			case ZEND_AST_METHOD:
+			case ZEND_AST_OPERATOR:
 			case ZEND_AST_CLASS:
 			case ZEND_AST_USE_TRAIT:
 			case ZEND_AST_NAMESPACE:
@@ -2069,6 +2070,7 @@ tail_call:
 		case ZEND_AST_CLOSURE:
 		case ZEND_AST_ARROW_FUNC:
 		case ZEND_AST_METHOD:
+		case ZEND_AST_OPERATOR:
 			decl = (const zend_ast_decl *) ast;
 			if (decl->child[4]) {
 				bool newlines = !(ast->kind == ZEND_AST_CLOSURE || ast->kind == ZEND_AST_ARROW_FUNC);
@@ -2929,6 +2931,7 @@ zend_ast * ZEND_FASTCALL zend_ast_with_attributes(zend_ast *ast, zend_ast *attr)
 	case ZEND_AST_FUNC_DECL:
 	case ZEND_AST_CLOSURE:
 	case ZEND_AST_METHOD:
+	case ZEND_AST_OPERATOR:
 	case ZEND_AST_ARROW_FUNC:
 	case ZEND_AST_PROPERTY_HOOK:
 		((zend_ast_decl *) ast)->child[4] = attr;

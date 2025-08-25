@@ -2741,7 +2741,7 @@ static inline bool zend_is_unticked_stmt(zend_ast *ast) /* {{{ */
 {
 	return ast->kind == ZEND_AST_STMT_LIST || ast->kind == ZEND_AST_LABEL
 		|| ast->kind == ZEND_AST_PROP_DECL || ast->kind == ZEND_AST_CLASS_CONST_GROUP
-		|| ast->kind == ZEND_AST_USE_TRAIT || ast->kind == ZEND_AST_METHOD;
+		|| ast->kind == ZEND_AST_USE_TRAIT || ast->kind == ZEND_AST_METHOD || ast->kind == ZEND_AST_OPERATOR;
 }
 /* }}} */
 
@@ -8408,7 +8408,7 @@ static zend_op_array *zend_compile_func_decl_ex(
 	zend_ast *uses_ast = decl->child[1];
 	zend_ast *stmt_ast = decl->child[2];
 	zend_ast *return_type_ast = decl->child[3];
-	bool is_method = decl->kind == ZEND_AST_METHOD;
+	bool is_method = decl->kind == ZEND_AST_METHOD || decl->kind == ZEND_AST_OPERATOR;
 	zend_string *lcname = NULL;
 	bool is_hook = decl->kind == ZEND_AST_PROPERTY_HOOK;
 
@@ -11716,6 +11716,7 @@ static void zend_compile_stmt(zend_ast *ast) /* {{{ */
 			break;
 		case ZEND_AST_FUNC_DECL:
 		case ZEND_AST_METHOD:
+		case ZEND_AST_OPERATOR:
 			zend_compile_func_decl(NULL, ast, FUNC_DECL_LEVEL_NESTED);
 			break;
 		case ZEND_AST_ENUM_CASE:

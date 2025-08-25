@@ -139,6 +139,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %token <ident> T_CONTINUE      "'continue'"
 %token <ident> T_GOTO          "'goto'"
 %token <ident> T_FUNCTION      "'function'"
+%token <ident> T_OPERATOR      "'operator'"
 %token <ident> T_FN            "'fn'"
 %token <ident> T_CONST         "'const'"
 %token <ident> T_RETURN        "'return'"
@@ -265,7 +266,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %type <ast> new_dereferenceable new_non_dereferenceable anonymous_class class_name class_name_reference simple_variable
 %type <ast> internal_functions_in_yacc
 %type <ast> scalar backticks_expr lexical_var function_call member_name property_name
-%type <ast> variable_class_name dereferenceable_scalar constant class_constant
+%type <ast> variable_class_name dereferenceable_scalar constant class_constant operator_symbol
 %type <ast> fully_dereferenceable array_object_dereferenceable
 %type <ast> callable_expr callable_variable static_member new_variable
 %type <ast> encaps_var encaps_var_offset isset_variables
@@ -995,6 +996,10 @@ attributed_class_statement:
 		return_type backup_fn_flags method_body backup_fn_flags
 			{ $$ = zend_ast_create_decl(ZEND_AST_METHOD, $3 | $1 | $12, $2, $5,
 				  zend_ast_get_str($4), $7, NULL, $11, $9, NULL); CG(extra_fn_flags) = $10; }
+	|	method_modifiers T_OPERATOR returns_ref '(' operator_symbol ')' backup_doc_comment '(' parameter_list ')'
+		return_type backup_fn_flags method_body backup_fn_flags
+			{ $$ = zend_ast_create_decl(ZEND_AST_OPERATOR, $3 | $1 | ZEND_ACC_OPERATOR | $14, CG(zend_lineno), $7,
+				  zend_ast_get_str($5), $9, NULL, $13, $11, NULL); CG(extra_fn_flags) = $12; }
 	|	enum_case { $$ = $1; }
 ;
 
@@ -1112,6 +1117,17 @@ member_modifier:
 	|	T_ABSTRACT				{ $$ = T_ABSTRACT; }
 	|	T_FINAL					{ $$ = T_FINAL; }
 	|	T_READONLY				{ $$ = T_READONLY; }
+;
+
+operator_symbol:
+		'+' { $$ = zend_ast_create_zval_from_str(zend_string_init("+", 1, 0)); }
+	|	'-' { $$ = zend_ast_create_zval_from_str(zend_string_init("-", 1, 0)); }
+	|	'*' { $$ = zend_ast_create_zval_from_str(zend_string_init("*", 1, 0)); }
+	|	'/' { $$ = zend_ast_create_zval_from_str(zend_string_init("/", 1, 0)); }
+	|	T_IS_EQUAL { $$ = zend_ast_create_zval_from_str(zend_string_init("==", 2, 0)); }
+	|	T_IS_IDENTICAL { $$ = zend_ast_create_zval_from_str(zend_string_init("===", 3, 0)); }
+	|	T_SL { $$ = zend_ast_create_zval_from_str(zend_string_init("<<", 2, 0)); }
+	|	T_SR { $$ = zend_ast_create_zval_from_str(zend_string_init(">>", 2, 0)); }
 ;
 
 property_list:

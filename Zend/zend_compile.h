@@ -404,6 +404,9 @@ typedef struct _zend_oparray_context {
 /* has #[\NoDiscard] attribute                            |     |     |     */
 #define ZEND_ACC_NODISCARD               (1 << 29) /*     |  X  |     |     */
 /*                                                        |     |     |     */
+/* function is an operator overload                       |     |     |     */
+#define ZEND_ACC_OPERATOR                (1 << 30) /*     |  X  |     |     */
+/*                                                        |     |     |     */
 /* op_array uses strict mode types                        |     |     |     */
 #define ZEND_ACC_STRICT_TYPES            (1U << 31) /*    |  X  |     |     */
 

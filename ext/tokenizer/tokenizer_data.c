@@ -76,6 +76,7 @@ char *get_token_type_name(int token_type)
 		case T_CONTINUE: return "T_CONTINUE";
 		case T_GOTO: return "T_GOTO";
 		case T_FUNCTION: return "T_FUNCTION";
+		case T_OPERATOR: return "T_OPERATOR";
 		case T_FN: return "T_FN";
 		case T_CONST: return "T_CONST";
 		case T_RETURN: return "T_RETURN";
