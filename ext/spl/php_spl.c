@@ -32,6 +32,7 @@
 #include "spl_dllist.h"
 #include "spl_fixedarray.h"
 #include "spl_heap.h"
+#include "spl_multimap.h"
 #include "zend_exceptions.h"
 #include "zend_interfaces.h"
 #include "main/snprintf.h"
@@ -203,6 +204,7 @@ PHP_FUNCTION(class_uses)
 	SPL_ADD_CLASS(SplHeap, z_list, sub, allow, ce_flags); \
 	SPL_ADD_CLASS(SplMinHeap, z_list, sub, allow, ce_flags); \
 	SPL_ADD_CLASS(SplMaxHeap, z_list, sub, allow, ce_flags); \
+	SPL_ADD_CLASS(SplMultiMap, z_list, sub, allow, ce_flags); \
 	SPL_ADD_CLASS(SplObjectStorage, z_list, sub, allow, ce_flags); \
 	SPL_ADD_CLASS(SplObserver, z_list, sub, allow, ce_flags); \
 	SPL_ADD_CLASS(SplPriorityQueue, z_list, sub, allow, ce_flags); \
@@ -734,6 +736,7 @@ PHP_MINIT_FUNCTION(spl)
 	PHP_MINIT(spl_dllist)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(spl_heap)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(spl_fixedarray)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(spl_multimap)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(spl_observer)(INIT_FUNC_ARGS_PASSTHRU);
 
 	return SUCCESS;
