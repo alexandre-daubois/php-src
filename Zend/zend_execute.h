@@ -225,6 +225,9 @@ static zend_always_inline void zend_safe_assign_to_variable_noref(zval *variable
 static zend_always_inline void zend_cast_zval_to_object(zval *result, zval *expr, uint8_t op1_type) {
 	HashTable *ht;
 
+	if (Z_TYPE_P(expr) == IS_NULL) {
+		zend_null_cast_deprecated("object");
+	}
 	ZVAL_OBJ(result, zend_objects_new(zend_standard_class_def));
 	if (Z_TYPE_P(expr) == IS_ARRAY) {
 		ht = zend_symtable_to_proptable(Z_ARR_P(expr));
@@ -262,6 +265,7 @@ static zend_always_inline void zend_cast_zval_to_array(zval *result, zval *expr,
 				if (Z_OPT_REFCOUNTED_P(expr)) Z_ADDREF_P(expr);
 			}
 		} else {
+			zend_null_cast_deprecated("array");
 			ZVAL_EMPTY_ARRAY(result);
 		}
 	} else if (ZEND_STD_BUILD_OBJECT_PROPERTIES_ARRAY_COMPATIBLE(expr)) {
