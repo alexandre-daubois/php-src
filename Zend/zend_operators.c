@@ -954,13 +954,30 @@ ZEND_API void ZEND_COLD zend_nan_coerced_to_type_warning(uint8_t type)
 	zend_error(E_WARNING, "unexpected NAN value was coerced to %s", zend_get_type_by_const(type));
 }
 
+ZEND_API void ZEND_COLD zend_null_cast_deprecated(const char *target_type)
+{
+	zend_error(E_DEPRECATED, "Implicit conversion from null to %s is deprecated", target_type);
+}
+
+ZEND_API void ZEND_COLD zend_malformed_string_cast_deprecated(const char *str, const char *target_type)
+{
+	zend_error(E_DEPRECATED, "Implicit conversion from malformed string \"%s\" to %s is deprecated", str, target_type);
+}
+
+ZEND_API void ZEND_COLD zend_object_cast_deprecated(const char *class_name, const char *target_type)
+{
+	zend_error(E_DEPRECATED, "Implicit conversion from %s to %s is deprecated", class_name, target_type);
+}
+
 ZEND_API zend_long ZEND_FASTCALL zval_get_long_func(const zval *op, bool is_strict) /* {{{ */
 {
 try_again:
 	switch (Z_TYPE_P(op)) {
 		case IS_UNDEF:
-		case IS_NULL:
 		case IS_FALSE:
+			return 0;
+		case IS_NULL:
+			zend_null_cast_deprecated("int");
 			return 0;
 		case IS_TRUE:
 			return 1;
@@ -983,11 +1000,19 @@ try_again:
 				uint8_t type;
 				zend_long lval;
 				double dval;
-				if (0 == (type = is_numeric_string(Z_STRVAL_P(op), Z_STRLEN_P(op), &lval, &dval, true))) {
+				bool trailing_data = false;
+				if (0 == (type = _is_numeric_string_ex(Z_STRVAL_P(op), Z_STRLEN_P(op), &lval, &dval, true, NULL, &trailing_data))) {
+					zend_malformed_string_cast_deprecated(Z_STRVAL_P(op), "int");
 					return 0;
 				} else if (EXPECTED(type == IS_LONG)) {
+					if (UNEXPECTED(trailing_data)) {
+						zend_malformed_string_cast_deprecated(Z_STRVAL_P(op), "int");
+					}
 					return lval;
 				} else {
+					if (UNEXPECTED(trailing_data)) {
+						zend_malformed_string_cast_deprecated(Z_STRVAL_P(op), "int");
+					}
 					/* Previously we used strtol here, not is_numeric_string,
 					 * and strtol gives you LONG_MAX/_MIN on overflow.
 					 * We use saturating conversion to emulate strtol()'s
@@ -1008,6 +1033,7 @@ try_again:
 		case IS_OBJECT:
 			{
 				zval dst;
+				zend_object_cast_deprecated(ZSTR_VAL(Z_OBJCE_P(op)->name), "int");
 				convert_object_to_type(op, &dst, IS_LONG);
 				if (Z_TYPE(dst) == IS_LONG) {
 					return Z_LVAL(dst);
@@ -1028,8 +1054,10 @@ ZEND_API double ZEND_FASTCALL zval_get_double_func(const zval *op) /* {{{ */
 {
 try_again:
 	switch (Z_TYPE_P(op)) {
-		case IS_NULL:
 		case IS_FALSE:
+			return 0.0;
+		case IS_NULL:
+			zend_null_cast_deprecated("float");
 			return 0.0;
 		case IS_TRUE:
 			return 1.0;
@@ -1040,12 +1068,28 @@ try_again:
 		case IS_DOUBLE:
 			return Z_DVAL_P(op);
 		case IS_STRING:
-			return zend_strtod(Z_STRVAL_P(op), NULL);
+			{
+				zend_long lval;
+				double dval;
+				bool trailing_data = false;
+				uint8_t type = _is_numeric_string_ex(Z_STRVAL_P(op), Z_STRLEN_P(op), &lval, &dval, true, NULL, &trailing_data);
+				if (type == 0 || trailing_data) {
+					zend_malformed_string_cast_deprecated(Z_STRVAL_P(op), "float");
+				}
+				if (type == IS_LONG) {
+					return (double) lval;
+				} else if (type == IS_DOUBLE) {
+					return dval;
+				} else {
+					return 0.0;
+				}
+			}
 		case IS_ARRAY:
 			return zend_hash_num_elements(Z_ARRVAL_P(op)) ? 1.0 : 0.0;
 		case IS_OBJECT:
 			{
 				zval dst;
+				zend_object_cast_deprecated(ZSTR_VAL(Z_OBJCE_P(op)->name), "float");
 				convert_object_to_type(op, &dst, IS_DOUBLE);
 
 				if (Z_TYPE(dst) == IS_DOUBLE) {
@@ -1068,8 +1112,10 @@ static zend_always_inline zend_string* __zval_get_string_func(zval *op, bool try
 try_again:
 	switch (Z_TYPE_P(op)) {
 		case IS_UNDEF:
-		case IS_NULL:
 		case IS_FALSE:
+			return ZSTR_EMPTY_ALLOC();
+		case IS_NULL:
+			zend_null_cast_deprecated("string");
 			return ZSTR_EMPTY_ALLOC();
 		case IS_TRUE:
 			return ZSTR_CHAR('1');

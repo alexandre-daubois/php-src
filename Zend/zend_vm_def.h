@@ -5845,6 +5845,10 @@ ZEND_VM_COLD_CONST_HANDLER(52, ZEND_BOOL, CONST|TMPVAR|CV, ANY)
 	val = GET_OP1_ZVAL_PTR_UNDEF(BP_VAR_R);
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZVAL_TRUE(EX_VAR(opline->result.var));
+	} else if (Z_TYPE_INFO_P(val) == IS_NULL) {
+		SAVE_OPLINE();
+		zend_null_cast_deprecated("bool");
+		ZVAL_FALSE(EX_VAR(opline->result.var));
 	} else if (EXPECTED(Z_TYPE_INFO_P(val) <= IS_TRUE)) {
 		/* The result and op1 can be the same cv zval */
 		const uint32_t orig_val_type = Z_TYPE_INFO_P(val);
@@ -5856,6 +5860,12 @@ ZEND_VM_COLD_CONST_HANDLER(52, ZEND_BOOL, CONST|TMPVAR|CV, ANY)
 		}
 	} else {
 		SAVE_OPLINE();
+		if (Z_TYPE_P(val) == IS_OBJECT) {
+			if (OP1_TYPE & (IS_VAR|IS_CV)) {
+				ZVAL_DEREF(val);
+			}
+			zend_object_cast_deprecated(ZSTR_VAL(Z_OBJCE_P(val)->name), "bool");
+		}
 		ZVAL_BOOL(EX_VAR(opline->result.var), i_zend_is_true(val));
 		FREE_OP1();
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
