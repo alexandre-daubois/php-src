@@ -5224,8 +5224,6 @@ static ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_FUNC_CCONV ZEND_
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZVAL_TRUE(EX_VAR(opline->result.var));
 	} else if (Z_TYPE_INFO_P(val) == IS_NULL) {
-		SAVE_OPLINE();
-		zend_null_cast_deprecated("bool");
 		ZVAL_FALSE(EX_VAR(opline->result.var));
 	} else if (EXPECTED(Z_TYPE_INFO_P(val) <= IS_TRUE)) {
 		/* The result and op1 can be the same cv zval */
@@ -5238,12 +5236,6 @@ static ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_FUNC_CCONV ZEND_
 		}
 	} else {
 		SAVE_OPLINE();
-		if (Z_TYPE_P(val) == IS_OBJECT) {
-			if (IS_CONST & (IS_VAR|IS_CV)) {
-				ZVAL_DEREF(val);
-			}
-			zend_object_cast_deprecated(ZSTR_VAL(Z_OBJCE_P(val)->name), "bool");
-		}
 		ZVAL_BOOL(EX_VAR(opline->result.var), i_zend_is_true(val));
 
 
@@ -15756,8 +15748,6 @@ static ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_FUNC_CCONV ZEND_BOOL_SPEC_TMP
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZVAL_TRUE(EX_VAR(opline->result.var));
 	} else if (Z_TYPE_INFO_P(val) == IS_NULL) {
-		SAVE_OPLINE();
-		zend_null_cast_deprecated("bool");
 		ZVAL_FALSE(EX_VAR(opline->result.var));
 	} else if (EXPECTED(Z_TYPE_INFO_P(val) <= IS_TRUE)) {
 		/* The result and op1 can be the same cv zval */
@@ -15770,12 +15760,6 @@ static ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_FUNC_CCONV ZEND_BOOL_SPEC_TMP
 		}
 	} else {
 		SAVE_OPLINE();
-		if (Z_TYPE_P(val) == IS_OBJECT) {
-			if ((IS_TMP_VAR|IS_VAR) & (IS_VAR|IS_CV)) {
-				ZVAL_DEREF(val);
-			}
-			zend_object_cast_deprecated(ZSTR_VAL(Z_OBJCE_P(val)->name), "bool");
-		}
 		ZVAL_BOOL(EX_VAR(opline->result.var), i_zend_is_true(val));
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -41969,8 +41953,6 @@ static ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_FUNC_CCONV ZEND_BOOL_SPEC_CV_
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZVAL_TRUE(EX_VAR(opline->result.var));
 	} else if (Z_TYPE_INFO_P(val) == IS_NULL) {
-		SAVE_OPLINE();
-		zend_null_cast_deprecated("bool");
 		ZVAL_FALSE(EX_VAR(opline->result.var));
 	} else if (EXPECTED(Z_TYPE_INFO_P(val) <= IS_TRUE)) {
 		/* The result and op1 can be the same cv zval */
@@ -41983,12 +41965,6 @@ static ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_FUNC_CCONV ZEND_BOOL_SPEC_CV_
 		}
 	} else {
 		SAVE_OPLINE();
-		if (Z_TYPE_P(val) == IS_OBJECT) {
-			if (IS_CV & (IS_VAR|IS_CV)) {
-				ZVAL_DEREF(val);
-			}
-			zend_object_cast_deprecated(ZSTR_VAL(Z_OBJCE_P(val)->name), "bool");
-		}
 		ZVAL_BOOL(EX_VAR(opline->result.var), i_zend_is_true(val));
 
 
@@ -60922,8 +60898,6 @@ static ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_CCONV ZEND_BOOL_
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZVAL_TRUE(EX_VAR(opline->result.var));
 	} else if (Z_TYPE_INFO_P(val) == IS_NULL) {
-		SAVE_OPLINE();
-		zend_null_cast_deprecated("bool");
 		ZVAL_FALSE(EX_VAR(opline->result.var));
 	} else if (EXPECTED(Z_TYPE_INFO_P(val) <= IS_TRUE)) {
 		/* The result and op1 can be the same cv zval */
@@ -60936,12 +60910,6 @@ static ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_CCONV ZEND_BOOL_
 		}
 	} else {
 		SAVE_OPLINE();
-		if (Z_TYPE_P(val) == IS_OBJECT) {
-			if (IS_CONST & (IS_VAR|IS_CV)) {
-				ZVAL_DEREF(val);
-			}
-			zend_object_cast_deprecated(ZSTR_VAL(Z_OBJCE_P(val)->name), "bool");
-		}
 		ZVAL_BOOL(EX_VAR(opline->result.var), i_zend_is_true(val));
 
 
@@ -71352,8 +71320,6 @@ static ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_CCONV ZEND_BOOL_SPEC_TMPVAR_T
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZVAL_TRUE(EX_VAR(opline->result.var));
 	} else if (Z_TYPE_INFO_P(val) == IS_NULL) {
-		SAVE_OPLINE();
-		zend_null_cast_deprecated("bool");
 		ZVAL_FALSE(EX_VAR(opline->result.var));
 	} else if (EXPECTED(Z_TYPE_INFO_P(val) <= IS_TRUE)) {
 		/* The result and op1 can be the same cv zval */
@@ -71366,12 +71332,6 @@ static ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_CCONV ZEND_BOOL_SPEC_TMPVAR_T
 		}
 	} else {
 		SAVE_OPLINE();
-		if (Z_TYPE_P(val) == IS_OBJECT) {
-			if ((IS_TMP_VAR|IS_VAR) & (IS_VAR|IS_CV)) {
-				ZVAL_DEREF(val);
-			}
-			zend_object_cast_deprecated(ZSTR_VAL(Z_OBJCE_P(val)->name), "bool");
-		}
 		ZVAL_BOOL(EX_VAR(opline->result.var), i_zend_is_true(val));
 		zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -97465,8 +97425,6 @@ static ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_CCONV ZEND_BOOL_SPEC_CV_TAILC
 	if (Z_TYPE_INFO_P(val) == IS_TRUE) {
 		ZVAL_TRUE(EX_VAR(opline->result.var));
 	} else if (Z_TYPE_INFO_P(val) == IS_NULL) {
-		SAVE_OPLINE();
-		zend_null_cast_deprecated("bool");
 		ZVAL_FALSE(EX_VAR(opline->result.var));
 	} else if (EXPECTED(Z_TYPE_INFO_P(val) <= IS_TRUE)) {
 		/* The result and op1 can be the same cv zval */
@@ -97479,12 +97437,6 @@ static ZEND_OPCODE_HANDLER_RET ZEND_OPCODE_HANDLER_CCONV ZEND_BOOL_SPEC_CV_TAILC
 		}
 	} else {
 		SAVE_OPLINE();
-		if (Z_TYPE_P(val) == IS_OBJECT) {
-			if (IS_CV & (IS_VAR|IS_CV)) {
-				ZVAL_DEREF(val);
-			}
-			zend_object_cast_deprecated(ZSTR_VAL(Z_OBJCE_P(val)->name), "bool");
-		}
 		ZVAL_BOOL(EX_VAR(opline->result.var), i_zend_is_true(val));
 
 

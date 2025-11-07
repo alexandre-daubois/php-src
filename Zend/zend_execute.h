@@ -225,9 +225,6 @@ static zend_always_inline void zend_safe_assign_to_variable_noref(zval *variable
 static zend_always_inline void zend_cast_zval_to_object(zval *result, zval *expr, uint8_t op1_type) {
 	HashTable *ht;
 
-	if (Z_TYPE_P(expr) == IS_NULL) {
-		zend_null_cast_deprecated("object");
-	}
 	ZVAL_OBJ(result, zend_objects_new(zend_standard_class_def));
 	if (Z_TYPE_P(expr) == IS_ARRAY) {
 		ht = zend_symtable_to_proptable(Z_ARR_P(expr));
@@ -237,6 +234,21 @@ static zend_always_inline void zend_cast_zval_to_object(zval *result, zval *expr
 		}
 		Z_OBJ_P(result)->properties = ht;
 	} else if (Z_TYPE_P(expr) != IS_NULL) {
+		switch (Z_TYPE_P(expr)) {
+			case IS_LONG:
+				zend_error(E_DEPRECATED, "Conversion from int to object is deprecated");
+				break;
+			case IS_DOUBLE:
+				zend_error(E_DEPRECATED, "Conversion from float to object is deprecated");
+				break;
+			case IS_STRING:
+				zend_error(E_DEPRECATED, "Conversion from string to object is deprecated");
+				break;
+			case IS_TRUE:
+			case IS_FALSE:
+				zend_error(E_DEPRECATED, "Conversion from bool to object is deprecated");
+				break;
+		}
 		if (UNEXPECTED(Z_TYPE_P(expr) == IS_DOUBLE && zend_isnan(Z_DVAL_P(expr)))) {
 			zend_nan_coerced_to_type_warning(IS_OBJECT);
 		}
@@ -265,7 +277,6 @@ static zend_always_inline void zend_cast_zval_to_array(zval *result, zval *expr,
 				if (Z_OPT_REFCOUNTED_P(expr)) Z_ADDREF_P(expr);
 			}
 		} else {
-			zend_null_cast_deprecated("array");
 			ZVAL_EMPTY_ARRAY(result);
 		}
 	} else if (ZEND_STD_BUILD_OBJECT_PROPERTIES_ARRAY_COMPATIBLE(expr)) {
