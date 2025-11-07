@@ -307,9 +307,7 @@ PHP_FUNCTION(readline_add_history)
 /* {{{ Clears the history */
 PHP_FUNCTION(readline_clear_history)
 {
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 #ifdef HAVE_LIBEDIT
 	/* clear_history is the only function where rl_initialize
@@ -329,9 +327,7 @@ PHP_FUNCTION(readline_list_history)
 {
 	HIST_ENTRY **history;
 
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	array_init(return_value);
 
@@ -554,9 +550,7 @@ PHP_FUNCTION(readline_callback_handler_install)
 /* {{{ Informs the readline callback interface that a character is ready for input */
 PHP_FUNCTION(readline_callback_read_char)
 {
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	if (Z_TYPE(_prepped_callback) != IS_UNDEF) {
 		rl_callback_read_char();
@@ -567,9 +561,7 @@ PHP_FUNCTION(readline_callback_read_char)
 /* {{{ Removes a previously installed callback handler and restores terminal settings */
 PHP_FUNCTION(readline_callback_handler_remove)
 {
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	if (Z_TYPE(_prepped_callback) != IS_UNDEF) {
 		rl_callback_handler_remove();
@@ -584,9 +576,7 @@ PHP_FUNCTION(readline_callback_handler_remove)
 /* {{{ Ask readline to redraw the display */
 PHP_FUNCTION(readline_redisplay)
 {
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 #ifdef HAVE_LIBEDIT
 	/* seems libedit doesn't take care of rl_initialize in rl_redisplay
@@ -603,9 +593,7 @@ PHP_FUNCTION(readline_redisplay)
 /* {{{ Inform readline that the cursor has moved to a new line */
 PHP_FUNCTION(readline_on_new_line)
 {
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	rl_on_new_line();
 }

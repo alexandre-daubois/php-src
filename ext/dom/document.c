@@ -502,9 +502,7 @@ PHP_METHOD(DOMDocument, createDocumentFragment)
 	dom_object *intern;
 
 	id = ZEND_THIS;
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	DOM_GET_OBJ(docp, id, xmlDocPtr, intern);
 
@@ -1251,9 +1249,7 @@ PHP_METHOD(DOMDocument, normalizeDocument)
 	dom_object *intern;
 
 	id = ZEND_THIS;
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	DOM_GET_OBJ(docp, id, xmlDocPtr, intern);
 
@@ -1806,9 +1802,7 @@ PHP_METHOD(DOMDocument, validate)
 	xmlValidCtxt *cvp;
 
 	id = ZEND_THIS;
-	if (zend_parse_parameters_none() == FAILURE) {
-		RETURN_THROWS();
-	}
+	ZEND_PARSE_PARAMETERS_NONE();
 
 	DOM_GET_OBJ(docp, id, xmlDocPtr, intern);
 
