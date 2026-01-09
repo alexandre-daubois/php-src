@@ -7,6 +7,8 @@ PHP                                                                        NEWS
     (henderkes)
   . Fixed bug GH-20767 (build failure with musttail/preserve_none feature
     on macOs). (David Carlier)
+  . Fix deprecation now showing when accessing null key of an array with JIT.
+    (alexandre-daubois)
 
 - MbString:
   . Fixed bug GH-20833 (mb_str_pad() divide by zero if padding string is
