@@ -70,6 +70,8 @@ d with 3.5:
 3
 
 d with "foo":
+
+Deprecated: Implicit conversion from non-numeric string "foo" to int in %s on line %d
 0
 
 d with []:
@@ -102,6 +104,8 @@ u with 3.5:
 3
 
 u with "foo":
+
+Deprecated: Implicit conversion from non-numeric string "foo" to int in %s on line %d
 0
 
 u with []:
@@ -134,6 +138,8 @@ f with 3.5:
 3.500000
 
 f with "foo":
+
+Deprecated: Implicit conversion from non-numeric string "foo" to float in %s on line %d
 0.000000
 
 f with []:
@@ -166,6 +172,8 @@ c with 3.5:
 
 
 c with "foo":
+
+Deprecated: Implicit conversion from non-numeric string "foo" to int in %s on line %d
 %0
 
 c with []:
@@ -198,6 +206,8 @@ x with 3.5:
 3
 
 x with "foo":
+
+Deprecated: Implicit conversion from non-numeric string "foo" to int in %s on line %d
 0
 
 x with []:

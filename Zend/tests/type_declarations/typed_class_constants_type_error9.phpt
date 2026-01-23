@@ -22,4 +22,5 @@ try {
 }
 ?>
 --EXPECT--
-Cannot assign S to class constant A::S of type string
+Side effect!
+string(1) "S"

@@ -62,6 +62,8 @@ try {
 Count returns null:
 int(0)
 Count returns a string:
+
+Deprecated: Implicit conversion from non-numeric string "hello" to int in %s on line %d
 int(0)
 Count returns an object:
 

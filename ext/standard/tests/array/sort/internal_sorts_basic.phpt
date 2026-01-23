@@ -105,6 +105,32 @@ array(8) {
   float(-0.3333333333333333)
 }
 Using SORT_NUMERIC:
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
 array(8) {
   ["test"]=>
   int(27)
@@ -215,6 +241,42 @@ array(8) {
   }
 }
 Using SORT_NUMERIC:
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
 array(8) {
   [16777216]=>
   float(-0.3333333333333333)
@@ -519,6 +581,32 @@ array(8) {
   float(-0.3333333333333333)
 }
 Using SORT_NUMERIC:
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
 array(8) {
   [0]=>
   int(27)
@@ -629,6 +717,42 @@ array(8) {
   }
 }
 Using SORT_NUMERIC:
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "PHP: Hypertext Preprocessor" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "Test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "monkey" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "test" to float in %s on line %d
 array(8) {
   [0]=>
   float(-0.3333333333333333)

@@ -11,6 +11,7 @@ var_dump($di);
 
 ?>
 --EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "bla" to int in %s on line %d
 object(DateInterval)#%d (%d) {
   ["y"]=>
   int(2)

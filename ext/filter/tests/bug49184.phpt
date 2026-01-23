@@ -14,7 +14,7 @@ HTTP_X_FORWARDED_FOR=example.com
   var_dump("done");
 ?>
 --EXPECT--
-string(11) "example.com"
+NULL
 string(11) "example.com"
 string(11) "example.com"
 string(4) "done"

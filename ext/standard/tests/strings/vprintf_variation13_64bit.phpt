@@ -51,7 +51,7 @@ foreach($formats as $format) {
 }
 
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing vprintf() : hexa formats with hexa values ***
 
 -- Iteration 1 --
@@ -75,6 +75,8 @@ int(43)
 int(30)
 
 -- Iteration 6 --
+
+Deprecated: Implicit conversion from non-numeric string "0xaxz" to int in %s on line %d
 123b fab 0 a
 int(12)
 

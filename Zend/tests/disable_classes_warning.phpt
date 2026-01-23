@@ -8,6 +8,7 @@ $o = new Exception();
 var_dump($o);
 ?>
 --EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "Exception" to int in Unknown on line 0
 object(Exception)#1 (7) {
   ["message":protected]=>
   string(0) ""

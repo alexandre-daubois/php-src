@@ -37,9 +37,14 @@ foreach ($vars as $var) {
 echo "Done\n";
 ?>
 --EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "string" to int in %s on line %d
 int(0)
 int(8754456)
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 int(0)
 int(9876545)
 int(0)

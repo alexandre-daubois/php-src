@@ -60,7 +60,11 @@ try {
 --EXPECTF--
 socket_set_option(): Argument #4 ($value) must have key "sec"
 
+Deprecated: Implicit conversion from non-numeric string "aaaaa" to int in %s on line %d
+
 Warning: Object of class stdClass could not be converted to int in %s on line %d
 socket_set_option(): Argument #4 ($value) must be of type array when argument #3 ($option) is SO_RCVTIMEO, string given
 socket_set_option(): Argument #4 ($value) must be of type array when argument #3 ($option) is SO_LINGER, string given
+
+Deprecated: Implicit conversion from non-numeric string "aaaa" to int in %s on line %d
 socket_set_option(): Argument #4 ($value) "l_onoff" must be between 0 and %d

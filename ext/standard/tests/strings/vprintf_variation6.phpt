@@ -63,7 +63,7 @@ foreach($args_array as $args) {
 }
 
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing vprintf() : float formats and non-float values ***
 
 -- Iteration 1 --
@@ -75,6 +75,42 @@ foreach($args_array as $args) {
 int(245)
 
 -- Iteration 2 --
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "123hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "-123hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "+123hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "S45678hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "-S45678hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "0123456hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "h123456ello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1234hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "NULL" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "true" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "123hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
 0.000000 +0.000000 0.000000
     123.000000 -123.000000 123.000000
         0.0000 0.0000     123456.000000 0.0000

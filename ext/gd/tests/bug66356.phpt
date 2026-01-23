@@ -26,8 +26,13 @@ var_dump(imagecrop($img, array("x" => 0x7fffff00, "y" => 0, "width" => 10, "heig
 var_dump(imagecrop($img, array("x" => 0, "y" => 0, "width" => 65535, "height" => 65535)));
 ?>
 --EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 object(GdImage)#2 (0) {
 }
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "12b" to int in %s on line %d
 object(GdImage)#2 (0) {
 }
 Array

@@ -140,7 +140,7 @@ false            => {closure:%s:%d}(): Argument #1 ($arg) must be of type string
 null             => null
 []               => {closure:%s:%d}(): Argument #1 ($arg) must be of type string|int|null, array given
 new stdClass     => {closure:%s:%d}(): Argument #1 ($arg) must be of type string|int|null, stdClass given
-new WithToString => {closure:%s:%d}(): Argument #1 ($arg) must be of type string|int|null, WithToString given
+new WithToString => "__toString()"
 
 Type string|bool:
 42               => {closure:%s:%d}(): Argument #1 ($arg) must be of type string|bool, int given
@@ -156,7 +156,7 @@ false            => false
 null             => {closure:%s:%d}(): Argument #1 ($arg) must be of type string|bool, null given
 []               => {closure:%s:%d}(): Argument #1 ($arg) must be of type string|bool, array given
 new stdClass     => {closure:%s:%d}(): Argument #1 ($arg) must be of type string|bool, stdClass given
-new WithToString => {closure:%s:%d}(): Argument #1 ($arg) must be of type string|bool, WithToString given
+new WithToString => "__toString()"
 
 Type float|array:
 42               => 42.0
@@ -188,7 +188,7 @@ false            => {closure:%s:%d}(): Argument #1 ($arg) must be of type array|
 null             => {closure:%s:%d}(): Argument #1 ($arg) must be of type array|string, null given
 []               => []
 new stdClass     => {closure:%s:%d}(): Argument #1 ($arg) must be of type array|string, stdClass given
-new WithToString => {closure:%s:%d}(): Argument #1 ($arg) must be of type array|string, WithToString given
+new WithToString => "__toString()"
 
 Type bool|array:
 42               => {closure:%s:%d}(): Argument #1 ($arg) must be of type array|bool, int given

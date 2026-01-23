@@ -11,6 +11,8 @@ is_a((int)" $y " + 0);
 --EXPECTF--
 Warning: Undefined variable $y in %stmp_001.php on line 2
 
+Deprecated: Implicit conversion from non-numeric string "  " to int in %s on line %d
+
 Fatal error: Uncaught ArgumentCountError: is_a() expects at least 2 arguments, 1 given in %stmp_001.php:2
 Stack trace:
 #0 %stmp_001.php(2): is_a(0)

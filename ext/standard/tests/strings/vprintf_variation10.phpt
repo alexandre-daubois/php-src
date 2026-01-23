@@ -79,26 +79,62 @@ foreach($args_array as $args) {
 *** Testing vprintf() : char formats and non-char values ***
 
 -- Iteration 1 --
-A ¿ B
-   ] ~ ‚
-   # Ý   à
-   Ã = 2 Ê
-   B ] A ¿
+A ï¿½ B
+   ] ~ ï¿½
+   # ï¿½   ï¿½
+   ï¿½ = 2 ï¿½
+   B ] A ï¿½
 int(47)
 
 -- Iteration 2 --
-A ¿ B
-   © ~ ‚
-   # Ý   à
-   Ã = 2 Ê
-   B © A ¿
+A ï¿½ B
+   ï¿½ ~ ï¿½
+   # ï¿½   ï¿½
+   ï¿½ = 2 ï¿½
+   B ï¿½ A ï¿½
 int(47)
 
 -- Iteration 3 --
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "123hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "-123hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "+123hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "S45678hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "-S45678hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "0123456hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "h123456ello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1234hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "NULL" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "true" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "123hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 %0 %0 %0
-   { … {
+   { ï¿½ {
    %0 %0 @ %0
-   Ò %0 %0 %0
+   ï¿½ %0 %0 %0
    %0 { %0 %0
 int(47)
 

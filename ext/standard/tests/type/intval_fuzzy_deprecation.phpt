@@ -4,10 +4,6 @@ intval() fuzzy cast deprecation with different bases
 <?php
 
 error_reporting(E_ALL);
-set_error_handler(function($code, $msg) {
-    echo "DEPRECATED: $msg\n";
-    return true;
-});
 
 echo "Clean: ";
 var_dump(intval("123"));
@@ -46,27 +42,28 @@ echo "With trailing: ";
 var_dump(intval("0b1010xyz", 2));
 
 ?>
---EXPECT--
+--EXPECTF--
 Clean: int(123)
-With trailing: DEPRECATED: Implicit conversion from non-numeric string "123abc" to int
+With trailing: 
+Deprecated: Implicit conversion from non-numeric string "123abc" to int in %s on line %d
 int(123)
-
 Clean: int(10)
-With trailing: DEPRECATED: intval(): Argument #1 ($num) contains non-numeric trailing data
+With trailing: 
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(10)
-
 Clean: int(63)
-With trailing: DEPRECATED: intval(): Argument #1 ($num) contains non-numeric trailing data
+With trailing: 
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(63)
-
 Clean: int(31)
-With trailing: DEPRECATED: intval(): Argument #1 ($num) contains non-numeric trailing data
+With trailing: 
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(31)
-
 Clean: int(10)
-With trailing: DEPRECATED: intval(): Argument #1 ($num) contains non-numeric trailing data
+With trailing: 
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(10)
-
 Clean: int(10)
-With trailing: DEPRECATED: intval(): Argument #1 ($num) contains non-numeric trailing data
+With trailing: 
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(10)

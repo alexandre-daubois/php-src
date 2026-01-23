@@ -264,6 +264,8 @@ Float Iteration 1
 -1.000000
 0.320000
 -0.320000
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
 3.400000
 2.540000
 -2.540000
@@ -276,6 +278,8 @@ Float Iteration 2
 -1.000000
 0.320000
 -0.320000
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
 3.400000
 2.540000
 -2.540000
@@ -288,6 +292,8 @@ Float Iteration 3
 -1.000000
 +0.320000
 -0.320000
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
 +3.400000
 +2.540000
 -2.540000
@@ -300,6 +306,8 @@ Float Iteration 4
   -1.00
    0.32
   -0.32
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
    3.40
    2.54
   -2.54
@@ -312,6 +320,8 @@ Float Iteration 5
 -1.00  
 0.32   
 -0.32  
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
 3.40   
 2.54   
 -2.54  
@@ -324,6 +334,8 @@ Float Iteration 6
 -001.00
 0000.32
 -000.32
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
 0003.40
 0002.54
 -002.54
@@ -336,6 +348,8 @@ Float Iteration 7
 -1.0000
 0.32000
 -0.3200
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
 3.40000
 2.54000
 -2.5400
@@ -348,6 +362,8 @@ Float Iteration 8
 ##-1.00
 ###0.32
 ##-0.32
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
 ###3.40
 ###2.54
 ##-2.54
@@ -486,10 +502,14 @@ Array
     [4] => 99
 )
 
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 %0
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 %0
 C
-½
+ï¿½
 c
 
 *** Output for scientific type ***
@@ -698,4 +718,6 @@ abcdefghjklmnpqrstuvwxyz
 12345
 
 *** Output for integer format parameter and string type argument ***
+
+Deprecated: Implicit conversion from non-numeric string "abcdefghjklmnpqrstuvwxyz" to int in %s on line %d
 0

@@ -63,7 +63,7 @@ foreach($args_array as $args) {
 }
 
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing vprintf() : scientific formats and non-scientific values ***
 
 -- Iteration 1 --
@@ -75,6 +75,42 @@ foreach($args_array as $args) {
 int(233)
 
 -- Iteration 2 --
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "123hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "-123hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "+123hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "S45678hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "-S45678hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "0123456hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "h123456ello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1234hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "NULL" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "true" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "123hello" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
 0.000000e+0 +0.000000e+0 0.000000e+0
     1.230000e+2 -1.230000e+2 1.230000e+2
      0.0000e+0 0.0000e+0  1.234560e+5 0.0000e+0

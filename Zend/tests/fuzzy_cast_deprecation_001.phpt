@@ -56,7 +56,6 @@ Empty string: DEPRECATED: Implicit conversion from non-numeric string "" to int
 int(0)
 Whitespace only: DEPRECATED: Implicit conversion from non-numeric string "  " to int
 int(0)
-
 Clean numeric: float(12.5)
 Scientific notation: float(1000)
 

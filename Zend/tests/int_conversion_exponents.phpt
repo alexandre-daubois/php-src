@@ -34,9 +34,17 @@ int(-1234500000)
 int(1234500000)
 int(-1234500000)
 
+
+Deprecated: Implicit conversion from non-numeric string " 1.2345e9  abc" to int in %s on line %d
 int(1234500000)
+
+Deprecated: Implicit conversion from non-numeric string " -1.2345e9  abc" to int in %s on line %d
 int(-1234500000)
+
+Deprecated: Implicit conversion from non-numeric string " 1.2345e9  abc" to int in %s on line %d
 int(1234500000)
+
+Deprecated: Implicit conversion from non-numeric string " -1.2345e9  abc" to int in %s on line %d
 int(-1234500000)
 
 Warning: A non-numeric value encountered in %s on line %d

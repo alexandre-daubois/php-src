@@ -15,28 +15,48 @@ test("9..");
 test("9.9.");
 test("9.9.9");
 ?>
---EXPECT--
+--EXPECTF--
 --> Testing ..9:
+
+Deprecated: Implicit conversion from non-numeric string "..9" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "..9" to float in %s on line %d
 float(0)
 bool(false)
 
 --> Testing .9.:
+
+Deprecated: Implicit conversion from non-numeric string ".9." to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string ".9." to float in %s on line %d
 float(0.9)
 bool(false)
 
 --> Testing 9..:
+
+Deprecated: Implicit conversion from non-numeric string "9.." to int in %s on line %d
 int(9)
+
+Deprecated: Implicit conversion from non-numeric string "9.." to float in %s on line %d
 float(9)
 bool(true)
 
 --> Testing 9.9.:
+
+Deprecated: Implicit conversion from non-numeric string "9.9." to int in %s on line %d
 int(9)
+
+Deprecated: Implicit conversion from non-numeric string "9.9." to float in %s on line %d
 float(9.9)
 bool(true)
 
 --> Testing 9.9.9:
+
+Deprecated: Implicit conversion from non-numeric string "9.9.9" to int in %s on line %d
 int(9)
+
+Deprecated: Implicit conversion from non-numeric string "9.9.9" to float in %s on line %d
 float(9.9)
 bool(true)

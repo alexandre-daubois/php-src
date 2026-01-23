@@ -29,25 +29,57 @@ echo "Done";
 *** Testing sprintf() : char formats with char values ***
 
 -- Iteration 1 --
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(2) " %0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(2) "%0 "
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(2) "	%0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(2) "
 %0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(1) "%0"
 
 -- Iteration 2 --
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(2) " %0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(2) "%0 "
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(2) "	%0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(2) "
 %0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
 string(1) "%0"
 
 -- Iteration 3 --
@@ -62,15 +94,15 @@ string(1) "C"
 string(1) "C"
 
 -- Iteration 4 --
-string(1) "½"
-string(1) "½"
-string(2) " ½"
-string(2) "½ "
-string(2) "	½"
+string(1) "ï¿½"
+string(1) "ï¿½"
+string(2) " ï¿½"
+string(2) "ï¿½ "
+string(2) "	ï¿½"
 string(2) "
-½"
-string(1) "½"
-string(1) "½"
+ï¿½"
+string(1) "ï¿½"
+string(1) "ï¿½"
 
 -- Iteration 5 --
 string(1) "c"
@@ -84,46 +116,110 @@ string(1) "c"
 string(1) "c"
 
 -- Iteration 6 --
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 string(2) " %0"
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 string(2) "%0 "
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 string(2) "	%0"
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 string(2) "
 %0"
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 string(1) "%0"
 
 -- Iteration 7 --
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 string(2) " %0"
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 string(2) "%0 "
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 string(2) "	%0"
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 string(2) "
 %0"
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 string(1) "%0"
 
 -- Iteration 8 --
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(2) " %0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(2) "%0 "
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(2) "	%0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(2) "
 %0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(1) "%0"
 
 -- Iteration 9 --
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(2) " %0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(2) "%0 "
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(2) "	%0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(2) "
 %0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(1) "%0"
+
+Deprecated: Implicit conversion from non-numeric string "A" to int in %s on line %d
 string(1) "%0"
 Done

@@ -113,7 +113,30 @@ var_dump(
 
 );
 ?>
---EXPECT--
+--EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "a" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "a" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "a" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "a" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to float in %s on line %d
 string(6) "pack e"
 string(16) "0000000000000000"
 string(16) "0000000000000000"

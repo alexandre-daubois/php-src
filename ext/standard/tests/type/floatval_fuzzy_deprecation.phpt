@@ -3,11 +3,6 @@ floatval() fuzzy cast deprecation
 --FILE--
 <?php
 
-set_error_handler(function($code, $msg) {
-    echo "DEPRECATED: $msg\n";
-    return true;
-});
-
 echo "Clean numeric: ";
 var_dump(floatval("12.5"));
 
@@ -24,12 +19,15 @@ echo "Empty string: ";
 var_dump(floatval(""));
 
 ?>
---EXPECT--
+--EXPECTF--
 Clean numeric: float(12.5)
 Scientific: float(1000)
-Partial numeric: DEPRECATED: Implicit conversion from non-numeric string "12.5foo" to float
+Partial numeric: 
+Deprecated: Implicit conversion from non-numeric string "12.5foo" to float in %s on line %d
 float(12.5)
-Fully non-numeric: DEPRECATED: Implicit conversion from non-numeric string "abc" to float
+Fully non-numeric: 
+Deprecated: Implicit conversion from non-numeric string "abc" to float in %s on line %d
 float(0)
-Empty string: DEPRECATED: Implicit conversion from non-numeric string "" to float
+Empty string: 
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
 float(0)

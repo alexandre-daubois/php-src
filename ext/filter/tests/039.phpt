@@ -136,7 +136,11 @@ array(1) {
 Warning: filter_var_array(): Unknown filter with ID -1 in %s on line %d
 filter_var_array(): Argument #2 ($options) cannot contain empty keys
 
+Deprecated: Implicit conversion from non-numeric string "asdasd" to int in %s on line %d
+
 Warning: filter_var_array(): Unknown filter with ID 0 in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "asdasd" to int in %s on line %d
 filter_var_array(): Argument #2 ($options) cannot contain empty keys
 
 Warning: filter_var_array(): Unknown filter with ID -1 in %s on line %d

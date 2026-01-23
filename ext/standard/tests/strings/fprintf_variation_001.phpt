@@ -31,7 +31,23 @@ echo "\nDone";
 unlink($data_file);
 
 ?>
---EXPECT--
+--EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "3.4-3.4" to float in %s on line %d
+
 *** Testing fprintf() with floats ***
 
 -- Iteration 1 --

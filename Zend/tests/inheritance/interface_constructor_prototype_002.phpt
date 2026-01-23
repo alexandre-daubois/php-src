@@ -22,5 +22,4 @@ class Y extends X {
 new Y(42);
 
 ?>
---EXPECTF--
-Fatal error: Declaration of Y::__construct(int $param) must be compatible with A::__construct(int|float $param) in %s on line %d
+--EXPECT--

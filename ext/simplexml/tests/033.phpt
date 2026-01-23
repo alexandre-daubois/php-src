@@ -39,8 +39,22 @@ var_dump((object)$people);
 bool(false)
 bool(true)
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "
+test
+  
+  
+  
+" to int in %s on line %d
 int(0)
 float(0)
+
+Deprecated: Implicit conversion from non-numeric string "
+test
+  
+  
+  
+" to float in %s on line %d
 float(0)
 string(0) ""
 string(15) "

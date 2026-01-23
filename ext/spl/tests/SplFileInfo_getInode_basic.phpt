@@ -26,5 +26,7 @@ var_dump($fileInfo->getInode() == (int) $result);
 <?php
 unlink('SplFileInfo_getInode_basic.txt');
 ?>
---EXPECT--
+--EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "%d SplFileInfo_getInode_basic.txt
+" to int in %s on line %d
 bool(true)

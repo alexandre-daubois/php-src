@@ -67,13 +67,11 @@ object(stdClass)#%d (1) {
   ["scalar"]=>
   float(3.14)
 }
-
 object(stdClass)#%d (2) {
   ["a"]=>
   int(1)
   ["b"]=>
   int(2)
 }
-
 object(stdClass)#%d (0) {
 }

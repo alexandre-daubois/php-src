@@ -13,4 +13,4 @@ var_dump(filter_var(
 --XFAIL--
 Requires php_zval_filter to not use convert_to_string for all filters.
 --EXPECT--
-NULL
+bool(false)

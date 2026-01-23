@@ -42,13 +42,11 @@ DEPRECATED: Implicit conversion from non-numeric string "123abc" to int
 Partial: int(123)
 DEPRECATED: Implicit conversion from non-numeric string "abc" to int
 Non-numeric: int(0)
-
 Clean: float(12.5)
 DEPRECATED: Implicit conversion from non-numeric string "12.5foo" to float
 Partial: float(12.5)
 DEPRECATED: Implicit conversion from non-numeric string "abc" to float
 Non-numeric: float(0)
-
 DEPRECATED: Conversion from int to object is deprecated
 Int: object(stdClass)#%d (1) {
   ["scalar"]=>

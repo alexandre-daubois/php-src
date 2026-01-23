@@ -160,7 +160,7 @@ ValueError: mb_substitute_character(): Argument #1 ($substitute_character) must 
 --heredoc--
 ValueError: mb_substitute_character(): Argument #1 ($substitute_character) must be "none", "long", "entity" or a valid codepoint
 --instance of classWithToString--
-TypeError: mb_substitute_character(): Argument #1 ($substitute_character) must be of type string|int|null, classWithToString given
+ValueError: mb_substitute_character(): Argument #1 ($substitute_character) must be "none", "long", "entity" or a valid codepoint
 --instance of classWithoutToString--
 TypeError: mb_substitute_character(): Argument #1 ($substitute_character) must be of type string|int|null, classWithoutToString given
 --undefined var--

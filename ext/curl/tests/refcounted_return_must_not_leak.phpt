@@ -23,5 +23,25 @@ curl_setopt($ch, CURLOPT_HEADERFUNCTION, 'return_non_interned_string');
 echo curl_exec($ch), PHP_EOL;
 echo "ok";
 ?>
---EXPECT--
+--EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "xxxxx" to int in %s on line %d
+
 ok

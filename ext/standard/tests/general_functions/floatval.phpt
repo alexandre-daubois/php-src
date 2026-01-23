@@ -141,11 +141,19 @@ float(3)
 float(0)
 float(1)
 float(-1300)
+
+Deprecated: Implicit conversion from non-numeric string "bob-1.3e3" to float in %s on line %d
 float(0)
+
+Deprecated: Implicit conversion from non-numeric string "10 Some dollars" to float in %s on line %d
 float(10)
+
+Deprecated: Implicit conversion from non-numeric string "10.2 Some Dollars" to float in %s on line %d
 float(10.2)
 float(11)
 float(11)
+
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
 float(0)
 float(1)
 float(0)
@@ -158,11 +166,19 @@ float(3)
 float(0)
 float(1)
 float(-1300)
+
+Deprecated: Implicit conversion from non-numeric string "bob-1.3e3" to float in %s on line %d
 float(0)
+
+Deprecated: Implicit conversion from non-numeric string "10 Some dollars" to float in %s on line %d
 float(10)
+
+Deprecated: Implicit conversion from non-numeric string "10.2 Some Dollars" to float in %s on line %d
 float(10.2)
 float(11)
 float(11)
+
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
 float(0)
 float(1)
 float(0)

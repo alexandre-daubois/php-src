@@ -107,6 +107,8 @@ string(3) "/1/"
 
 string(13) "42/-1337/1/42"
 
+
+Deprecated: Implicit conversion from non-numeric string "%s" to int in %s on line %d
 string(8) "0/53/1/3"
 
 Called
@@ -127,8 +129,12 @@ string(24) "2147483647/0/-2147483648"
 
 string(5) "1/0/1"
 
+
+Deprecated: Implicit conversion from non-numeric string "foo" to int in %s on line %d
 string(3) "1/0"
 
+
+Deprecated: Implicit conversion from non-numeric string "foo" to int in %s on line %d
 string(1) "0"
 
 Done
