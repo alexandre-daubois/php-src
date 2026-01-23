@@ -33,6 +33,18 @@ var_dump($inputs);
 --EXPECTF--
 *** Testing array_multisort() : usage variation  - test sort order of all types***
 
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "string" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "string" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "string" to float in %s on line %d
+
 Warning: Object of class classWithToString could not be converted to float in %s on line %d
 
 Warning: Object of class classWithToString could not be converted to float in %s on line %d
@@ -40,6 +52,10 @@ Warning: Object of class classWithToString could not be converted to float in %s
 Warning: Object of class classWithoutToString could not be converted to float in %s on line %d
 
 Warning: Object of class classWithoutToString could not be converted to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "string" to float in %s on line %d
 bool(true)
 array(10) {
   ["float -10.5"]=>

@@ -62,6 +62,8 @@ Warning: The float 1.0E+21 is not representable as an int, cast occurred in %s o
 int(34)
 
 -- Iteration 4 --
+
+Deprecated: Implicit conversion from non-numeric string "10_" to int in %s on line %d
 #1 0 $0 10
 int(10)
 

@@ -17,7 +17,7 @@ var_dump($ar);
 
 
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing array_multisort() : Testing  all array sort specifiers ***
 array(3) {
   [0]=>
@@ -35,6 +35,10 @@ array(3) {
   [2]=>
   string(2) "aa"
 }
+
+Deprecated: Implicit conversion from non-numeric string "aa" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "aa" to float in %s on line %d
 array(3) {
   [0]=>
   string(2) "aa"

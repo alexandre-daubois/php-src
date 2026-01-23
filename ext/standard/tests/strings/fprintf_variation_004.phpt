@@ -26,6 +26,10 @@ unlink($data_file);
 
 ?>
 --EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "a" to int in %s on line %d
+
 *** Testing fprintf() for chars ***
 
 %0

@@ -94,6 +94,7 @@ bool(true)
 NULL
 bool(true)
 int(1)
+string(67) "Implicit conversion from non-numeric string "another string" to int"
 bool(true)
 int(0)
 bool(true)
@@ -106,6 +107,7 @@ bool(true)
 int(0)
 bool(true)
 int(0)
+string(64) "Implicit conversion from non-numeric string "some string" to int"
 bool(true)
 int(0)
 bool(true)
@@ -117,6 +119,7 @@ bool(true)
 int(%d)
 bool(true)
 float(1)
+string(69) "Implicit conversion from non-numeric string "another string" to float"
 bool(true)
 float(0)
 bool(true)
@@ -129,6 +132,7 @@ bool(true)
 float(0)
 bool(true)
 float(0)
+string(66) "Implicit conversion from non-numeric string "some string" to float"
 bool(true)
 float(0)
 bool(true)
@@ -265,6 +269,7 @@ object(stdClass)#%d (3) {
   ["2"]=>
   int(3)
 }
+string(46) "Conversion from string to object is deprecated"
 bool(true)
 object(stdClass)#%d (1) {
   ["scalar"]=>
@@ -279,11 +284,13 @@ object(stdClass)#%d (3) {
   ["2"]=>
   int(4)
 }
+string(43) "Conversion from int to object is deprecated"
 bool(true)
 object(stdClass)#%d (1) {
   ["scalar"]=>
   int(1)
 }
+string(45) "Conversion from float to object is deprecated"
 bool(true)
 object(stdClass)#%d (1) {
   ["scalar"]=>
@@ -292,21 +299,25 @@ object(stdClass)#%d (1) {
 bool(true)
 object(stdClass)#%d (0) {
 }
+string(44) "Conversion from bool to object is deprecated"
 bool(true)
 object(stdClass)#%d (1) {
   ["scalar"]=>
   bool(false)
 }
+string(46) "Conversion from string to object is deprecated"
 bool(true)
 object(stdClass)#%d (1) {
   ["scalar"]=>
   string(11) "some string"
 }
+string(48) "Conversion from resource to object is deprecated"
 bool(true)
 object(stdClass)#%d (1) {
   ["scalar"]=>
   resource(%d) of type (Unknown)
 }
+string(48) "Conversion from resource to object is deprecated"
 bool(true)
 object(stdClass)#%d (1) {
   ["scalar"]=>

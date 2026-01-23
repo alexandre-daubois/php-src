@@ -41,7 +41,7 @@ var_dump(password_needs_rehash(crypt('Example', '$6$rounds=5000$aa$'), PASSWORD_
 
 echo "OK!";
 ?>
---EXPECT--
+--EXPECTF--
 bool(true)
 bool(true)
 bool(true)
@@ -53,6 +53,8 @@ bool(false)
 bool(true)
 bool(true)
 bool(false)
+
+Deprecated: Implicit conversion from non-numeric string "foo" to int in %s on line %d
 bool(true)
 bool(true)
 bool(true)

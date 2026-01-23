@@ -22,6 +22,11 @@ var_dump($foo->offsetExists($a));
 var_dump($foo->offsetExists($b));
 
 ?>
---EXPECT--
+--EXPECTF--
+Deprecated: Conversion from string to object is deprecated in %s on line %d
+
+Deprecated: Conversion from string to object is deprecated in %s on line %d
+
+Deprecated: Conversion from string to object is deprecated in %s on line %d
 bool(false)
 bool(true)

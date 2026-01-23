@@ -62,6 +62,8 @@ array(1) {
   float(NAN)
 }
 
+Deprecated: Conversion from float to object is deprecated in %s on line %d
+
 Warning: unexpected NAN value was coerced to object in %s on line %d
 object(stdClass)#%d (1) {
   ["scalar"]=>
@@ -87,6 +89,8 @@ array(1) {
 }
 
 Warning: unexpected NAN value was coerced to object in %s on line %d
+
+Deprecated: Conversion from float to object is deprecated in %s on line %d
 object(stdClass)#%d (1) {
   ["scalar"]=>
   float(NAN)

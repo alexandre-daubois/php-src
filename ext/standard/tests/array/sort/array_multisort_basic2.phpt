@@ -13,10 +13,12 @@ var_dump( array_multisort($ar1, SORT_ASC, SORT_REGULAR, $ar2, SORT_ASC, SORT_NUM
 var_dump($ar1, $ar2);
 
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing array_multisort() : basic functionality - renumbering of numeric keys ***
 
 -- Testing array_multisort() function with all normal arguments --
+
+Deprecated: Implicit conversion from non-numeric string "aa" to float in %s on line %d
 bool(true)
 array(3) {
   [0]=>

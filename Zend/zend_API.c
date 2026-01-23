@@ -756,6 +756,17 @@ ZEND_API bool ZEND_FASTCALL zend_parse_arg_str_weak(zval *arg, zend_string **des
 ZEND_API bool ZEND_FASTCALL zend_parse_arg_str_slow(zval *arg, zend_string **dest, uint32_t arg_num) /* {{{ */
 {
 	if (UNEXPECTED(ZEND_ARG_USES_STRICT_TYPES())) {
+		/* Allow Stringable objects even in strict mode */
+		if (Z_TYPE_P(arg) == IS_OBJECT) {
+			zend_object *zobj = Z_OBJ_P(arg);
+			zval obj;
+			if (zobj->handlers->cast_object(zobj, &obj, IS_STRING) == SUCCESS) {
+				OBJ_RELEASE(zobj);
+				ZVAL_COPY_VALUE(arg, &obj);
+				*dest = Z_STR_P(arg);
+				return 1;
+			}
+		}
 		return 0;
 	}
 	return zend_parse_arg_str_weak(arg, dest, arg_num);
@@ -765,6 +776,17 @@ ZEND_API bool ZEND_FASTCALL zend_parse_arg_str_slow(zval *arg, zend_string **des
 ZEND_API bool ZEND_FASTCALL zend_flf_parse_arg_str_slow(zval *arg, zend_string **dest, uint32_t arg_num)
 {
 	if (UNEXPECTED(ZEND_FLF_ARG_USES_STRICT_TYPES())) {
+		/* Allow Stringable objects even in strict mode */
+		if (Z_TYPE_P(arg) == IS_OBJECT) {
+			zend_object *zobj = Z_OBJ_P(arg);
+			zval obj;
+			if (zobj->handlers->cast_object(zobj, &obj, IS_STRING) == SUCCESS) {
+				OBJ_RELEASE(zobj);
+				ZVAL_COPY_VALUE(arg, &obj);
+				*dest = Z_STR_P(arg);
+				return 1;
+			}
+		}
 		return 0;
 	}
 	return zend_parse_arg_str_weak(arg, dest, arg_num);

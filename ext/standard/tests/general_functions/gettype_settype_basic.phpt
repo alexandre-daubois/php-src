@@ -189,6 +189,7 @@ bool(true)
 int(1)
 string(7) "integer"
 -- Iteration 2 --
+8192: Implicit conversion from non-numeric string "another string" to int
 bool(true)
 int(0)
 string(7) "integer"
@@ -221,10 +222,12 @@ bool(true)
 int(0)
 string(7) "integer"
 -- Iteration 10 --
+8192: Implicit conversion from non-numeric string "some string" to int
 bool(true)
 int(0)
 string(7) "integer"
 -- Iteration 11 --
+8192: Implicit conversion from non-numeric string "string" to int
 bool(true)
 int(0)
 string(7) "integer"
@@ -248,6 +251,7 @@ bool(true)
 int(1)
 string(7) "integer"
 -- Iteration 2 --
+8192: Implicit conversion from non-numeric string "another string" to int
 bool(true)
 int(0)
 string(7) "integer"
@@ -280,10 +284,12 @@ bool(true)
 int(0)
 string(7) "integer"
 -- Iteration 10 --
+8192: Implicit conversion from non-numeric string "some string" to int
 bool(true)
 int(0)
 string(7) "integer"
 -- Iteration 11 --
+8192: Implicit conversion from non-numeric string "string" to int
 bool(true)
 int(0)
 string(7) "integer"
@@ -307,6 +313,7 @@ bool(true)
 float(1)
 string(6) "double"
 -- Iteration 2 --
+8192: Implicit conversion from non-numeric string "another string" to float
 bool(true)
 float(0)
 string(6) "double"
@@ -339,10 +346,12 @@ bool(true)
 float(0)
 string(6) "double"
 -- Iteration 10 --
+8192: Implicit conversion from non-numeric string "some string" to float
 bool(true)
 float(0)
 string(6) "double"
 -- Iteration 11 --
+8192: Implicit conversion from non-numeric string "string" to float
 bool(true)
 float(0)
 string(6) "double"
@@ -366,6 +375,7 @@ bool(true)
 float(1)
 string(6) "double"
 -- Iteration 2 --
+8192: Implicit conversion from non-numeric string "another string" to float
 bool(true)
 float(0)
 string(6) "double"
@@ -398,10 +408,12 @@ bool(true)
 float(0)
 string(6) "double"
 -- Iteration 10 --
+8192: Implicit conversion from non-numeric string "some string" to float
 bool(true)
 float(0)
 string(6) "double"
 -- Iteration 11 --
+8192: Implicit conversion from non-numeric string "string" to float
 bool(true)
 float(0)
 string(6) "double"
@@ -686,6 +698,7 @@ object(stdClass)#2 (3) {
 }
 string(6) "object"
 -- Iteration 2 --
+8192: Conversion from string to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>
@@ -704,6 +717,7 @@ object(stdClass)#2 (3) {
 }
 string(6) "object"
 -- Iteration 4 --
+8192: Conversion from int to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>
@@ -711,6 +725,7 @@ object(stdClass)#2 (1) {
 }
 string(6) "object"
 -- Iteration 5 --
+8192: Conversion from int to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>
@@ -718,6 +733,7 @@ object(stdClass)#2 (1) {
 }
 string(6) "object"
 -- Iteration 6 --
+8192: Conversion from float to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>
@@ -725,6 +741,7 @@ object(stdClass)#2 (1) {
 }
 string(6) "object"
 -- Iteration 7 --
+8192: Conversion from float to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>
@@ -737,6 +754,7 @@ object(stdClass)#2 (0) {
 }
 string(6) "object"
 -- Iteration 9 --
+8192: Conversion from bool to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>
@@ -744,6 +762,7 @@ object(stdClass)#2 (1) {
 }
 string(6) "object"
 -- Iteration 10 --
+8192: Conversion from string to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>
@@ -751,6 +770,7 @@ object(stdClass)#2 (1) {
 }
 string(6) "object"
 -- Iteration 11 --
+8192: Conversion from string to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>
@@ -758,6 +778,7 @@ object(stdClass)#2 (1) {
 }
 string(6) "object"
 -- Iteration 12 --
+8192: Conversion from resource to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>
@@ -765,6 +786,7 @@ object(stdClass)#2 (1) {
 }
 string(6) "object"
 -- Iteration 13 --
+8192: Conversion from resource to object is deprecated
 bool(true)
 object(stdClass)#2 (1) {
   ["scalar"]=>

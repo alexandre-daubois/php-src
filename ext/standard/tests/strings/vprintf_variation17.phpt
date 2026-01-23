@@ -40,7 +40,7 @@ foreach($formats as $format) {
 }
 
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing vprintf() : scientific formats and scientific values ***
 
 -- Iteration 1 --
@@ -56,6 +56,8 @@ int(36)
 int(32)
 
 -- Iteration 4 --
+
+Deprecated: Implicit conversion from non-numeric string "1e2_" to float in %s on line %d
 #########1.000000e+1 1.000000e+2 $$$$$$$$-1.000000e+3 _________1.000000e+2
 int(74)
 

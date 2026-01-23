@@ -56,23 +56,27 @@ foreach($formats as $format) {
 int(1)
 
 -- Iteration 2 --
+
+Deprecated: Implicit conversion from non-numeric string "c" to int in %s on line %d
 %0 C
 int(3)
 
 -- Iteration 3 --
-%0 ½ C
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
+%0 ï¿½ C
 int(5)
 
 -- Iteration 4 --
-a Ÿ b b
+a ï¿½ b b
 int(7)
 
 -- Iteration 5 --
-a Ÿ b b
+a ï¿½ b b
 int(7)
 
 -- Iteration 6 --
-; « S 
+; ï¿½ S 
 
 int(7)
 

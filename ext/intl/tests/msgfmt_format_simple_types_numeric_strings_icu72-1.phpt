@@ -36,6 +36,19 @@ var_dump($mf->format(array(
 
 ?>
 --EXPECTF--
+Deprecated: Implicit conversion from non-numeric string "1336317965.5 str" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1336317965.5 str" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1336317965.5 str" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1336317965.5 str" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1336317965.5 str" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1336317965.5 str" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1336317965.5 str" to float in %s on line %d
 string(%d) "
     none			1336317965.5 str
     number			1,336,317,965.5

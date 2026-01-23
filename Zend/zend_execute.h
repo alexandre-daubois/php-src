@@ -30,6 +30,9 @@
 #include <stdint.h>
 
 BEGIN_EXTERN_C()
+
+ZEND_API const char *zend_zval_type_name(const zval *arg);
+
 struct _zend_fcall_info;
 ZEND_API extern void (*zend_execute_ex)(zend_execute_data *execute_data);
 ZEND_API extern void (*zend_execute_internal)(zend_execute_data *execute_data, zval *return_value);
@@ -234,6 +237,15 @@ static zend_always_inline void zend_cast_zval_to_object(zval *result, zval *expr
 		}
 		Z_OBJ_P(result)->properties = ht;
 	} else if (Z_TYPE_P(expr) != IS_NULL) {
+		/* Scalar-to-object conversion is deprecated */
+		zend_error(E_DEPRECATED,
+			"Conversion from %s to object is deprecated",
+			zend_zval_type_name(expr));
+		if (UNEXPECTED(EG(exception))) {
+			zval_ptr_dtor(result);
+			ZVAL_UNDEF(result);
+			return;
+		}
 		if (UNEXPECTED(Z_TYPE_P(expr) == IS_DOUBLE && zend_isnan(Z_DVAL_P(expr)))) {
 			zend_nan_coerced_to_type_warning(IS_OBJECT);
 		}

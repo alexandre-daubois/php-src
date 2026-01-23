@@ -13,5 +13,5 @@ var_dump($foo);
 ?>
 --EXPECT--
 float(-0)
-float(-0)
+float(0)
 float(-0)

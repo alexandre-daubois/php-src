@@ -75,7 +75,7 @@ foreach($args_array as $args) {
 }
 
 ?>
---EXPECT--
+--EXPECTF--
 *** Testing vprintf() : hexa formats and non-hexa values ***
 
 -- Iteration 1 --
@@ -95,6 +95,40 @@ int(125)
 int(164)
 
 -- Iteration 3 --
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "123hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "-123hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "+123hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "S45678hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "-S45678hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "h123456ello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "1234hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "NULL" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "true" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "123hello" to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string " " to int in %s on line %d
 0 0 0
     7b ffffffffffffff85 7b  
                           

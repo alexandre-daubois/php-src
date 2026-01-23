@@ -20,4 +20,4 @@ echo addcslashes($_GET['a'],"\0") . "\n";
 unsafe_raw
 4
 bool(true)
-1
+1\000

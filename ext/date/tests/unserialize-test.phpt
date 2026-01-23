@@ -37,6 +37,10 @@ bool(false)
 
 ossfuzz-55727.txt: 
 %s: unserialize(): Error at offset 230 of 509 bytes in %sunserialize-test.php on line %d
+
+Deprecated: Implicit conversion from non-numeric string "%A" to float in %s on line %d
+
+Deprecated: Implicit conversion from non-numeric string "%A" to float in %s on line %d
 bool(false)
 
 

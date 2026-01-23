@@ -65,7 +65,7 @@ foreach ($badInputs as $input) {
 print '--- Done ---';
 
 ?>
---EXPECT--
+--EXPECTF--
 --- Good Inputs - Base = 0 ---
 int(2147483647)
 int(2147483647)
@@ -73,12 +73,18 @@ int(-2147483647)
 int(2147483647)
 int(2147483647)
 int(-2147483647)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
 int(1)
 int(0)
 int(1)
 int(4)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(1)
 --- Good Inputs - Base = 2 ---
 int(2147483647)
@@ -87,32 +93,79 @@ int(-2147483647)
 int(2147483647)
 int(2147483647)
 int(-2147483647)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
 int(1)
 int(0)
 int(1)
 int(4)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(1)
 --- Good Inputs - Base = default ---
+
+Deprecated: Implicit conversion from non-numeric string "0b1111111111111111111111111111111" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "+0b1111111111111111111111111111111" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "-0b1111111111111111111111111111111" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string " 	
+0b1111111111111111111111111111111" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string " 	
++0b1111111111111111111111111111111" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string " 	
+-0b1111111111111111111111111111111" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "0b" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "0B" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "0B1" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "0b000" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "0b001" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "0b00100" to int in %s on line %d
 int(0)
+
+Deprecated: Implicit conversion from non-numeric string "0b1 1" to int in %s on line %d
 int(0)
 --- Bad Inputs - Base = 0 ---
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
+
+Deprecated: intval(): Argument #1 ($num) contains non-numeric trailing data in %s on line %d
 int(0)
 --- Done ---

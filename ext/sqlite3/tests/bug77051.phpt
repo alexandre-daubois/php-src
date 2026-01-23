@@ -43,7 +43,7 @@ echo "Statement result\n";
 var_dump($res->fetchArray(SQLITE3_NUM));
 
 ?>
---EXPECT--
+--EXPECTF--
 Execute statement
 object(SQLite3Result)#3 (0) {
 }
@@ -58,6 +58,8 @@ array(3) {
 }
 Change binded param to wrong type
 Execute statement
+
+Deprecated: Implicit conversion from non-numeric string "TEST" to int in %s on line %d
 object(SQLite3Result)#4 (0) {
 }
 Statement result

@@ -18,6 +18,7 @@ var_dump($nan);
 --EXPECTF--
 float(NAN)
 unexpected NAN value was coerced to object
+Conversion from string to object is deprecated
 object(stdClass)#2 (1) {
   ["scalar"]=>
   string(8) "%s"

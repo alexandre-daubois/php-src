@@ -208,7 +208,7 @@ string(0) ""
 
 *** Trying object(StringCapable)#%d (0) {
 }
-*** Caught {closure:%s:%d}(): Argument #1 ($s) must be of type string, StringCapable given, called in %s on line %d
+string(6) "foobar"
 
 *** Trying resource(%d) of type (stream)
 *** Caught {closure:%s:%d}(): Argument #1 ($s) must be of type string, resource given, called in %s on line %d

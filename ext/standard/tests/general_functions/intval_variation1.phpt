@@ -154,21 +154,33 @@ int(1)
 int(0)
 
 --empty string DQ--
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 int(0)
 
 --empty string SQ--
+
+Deprecated: Implicit conversion from non-numeric string "" to int in %s on line %d
 int(0)
 
 --string DQ--
+
+Deprecated: Implicit conversion from non-numeric string "string" to int in %s on line %d
 int(0)
 
 --string SQ--
+
+Deprecated: Implicit conversion from non-numeric string "string" to int in %s on line %d
 int(0)
 
 --mixed case string--
+
+Deprecated: Implicit conversion from non-numeric string "sTrInG" to int in %s on line %d
 int(0)
 
 --heredoc--
+
+Deprecated: Implicit conversion from non-numeric string "hello world" to int in %s on line %d
 int(0)
 
 --instance of classWithToString--

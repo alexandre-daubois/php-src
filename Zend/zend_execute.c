@@ -820,6 +820,16 @@ ZEND_API bool zend_verify_scalar_type_hint(uint32_t type_mask, zval *arg, bool s
 	if (UNEXPECTED(strict)) {
 		/* SSTH Exception: IS_LONG may be accepted as IS_DOUBLE (converted) */
 		if (!(type_mask & MAY_BE_DOUBLE) || Z_TYPE_P(arg) != IS_LONG) {
+			/* Stringable exception: objects with __toString() accepted for string */
+			if ((type_mask & MAY_BE_STRING) && Z_TYPE_P(arg) == IS_OBJECT) {
+				zend_object *zobj = Z_OBJ_P(arg);
+				zval tmp;
+				if (zobj->handlers->cast_object(zobj, &tmp, IS_STRING) == SUCCESS) {
+					zval_ptr_dtor(arg);
+					ZVAL_COPY_VALUE(arg, &tmp);
+					return 1;
+				}
+			}
 			return 0;
 		}
 	} else if (UNEXPECTED(Z_TYPE_P(arg) == IS_NULL)) {
