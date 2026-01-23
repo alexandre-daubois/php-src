@@ -138,6 +138,20 @@ PHP_FUNCTION(settype)
 }
 /* }}} */
 
+static void intval_trailing_data_deprecation(const char *endptr) {
+	if (endptr != NULL && *endptr != '\0') {
+		/* Skip trailing whitespace */
+		while (*endptr == ' ' || *endptr == '\t' || *endptr == '\n' ||
+		       *endptr == '\r' || *endptr == '\v' || *endptr == '\f') {
+			endptr++;
+		}
+		if (*endptr != '\0') {
+			zend_error(E_DEPRECATED,
+				"intval(): Argument #1 ($num) contains non-numeric trailing data");
+		}
+	}
+}
+
 /* {{{ Get the integer value of a variable using the optional base for the conversion */
 PHP_FUNCTION(intval)
 {
@@ -173,9 +187,16 @@ PHP_FUNCTION(intval)
 			}
 
 			if (strval[offset] == '0' && (strval[offset + 1] == 'b' || strval[offset + 1] == 'B')) {
+				char *endptr = NULL;
+				zend_long result;
 				if (strval[0] != '-') {
 					/* Either "+0b", or "0b" */
-					RETURN_LONG(ZEND_STRTOL(strval + 2 + offset, NULL, 2));
+					result = ZEND_STRTOL(strval + 2 + offset, &endptr, 2);
+					intval_trailing_data_deprecation(endptr);
+					if (UNEXPECTED(EG(exception))) {
+						RETURN_THROWS();
+					}
+					RETURN_LONG(result);
 				}
 
 				char *tmpval;
@@ -189,14 +210,25 @@ PHP_FUNCTION(intval)
 				memcpy(tmpval + offset, strval + offset + 2, strlen - offset);
 				tmpval[strlen] = 0;
 
-				RETVAL_LONG(ZEND_STRTOL(tmpval, NULL, 2));
+				result = ZEND_STRTOL(tmpval, &endptr, 2);
 				efree(tmpval);
+				intval_trailing_data_deprecation(endptr);
+				if (UNEXPECTED(EG(exception))) {
+					RETURN_THROWS();
+				}
+				RETVAL_LONG(result);
 				return;
 			}
 		}
 	}
 
-	RETVAL_LONG(ZEND_STRTOL(Z_STRVAL_P(num), NULL, base));
+	char *endptr = NULL;
+	zend_long result = ZEND_STRTOL(Z_STRVAL_P(num), &endptr, base);
+	intval_trailing_data_deprecation(endptr);
+	if (UNEXPECTED(EG(exception))) {
+		RETURN_THROWS();
+	}
+	RETVAL_LONG(result);
 }
 /* }}} */
 

@@ -642,8 +642,34 @@ try_again:
 		case IS_STRING:
 			{
 				zend_string *str = Z_STR_P(op);
+				bool trailing_data = false;
+				zend_long lval;
+				double dval;
+				uint8_t type = is_numeric_string_ex(ZSTR_VAL(str), ZSTR_LEN(str), &lval, &dval, true, NULL, &trailing_data);
 
-				ZVAL_DOUBLE(op, zend_strtod(ZSTR_VAL(str), NULL));
+				if (type == 0) {
+					zend_error(E_DEPRECATED,
+						"Implicit conversion from non-numeric string \"%s\" to float",
+						ZSTR_VAL(str));
+					if (UNEXPECTED(EG(exception))) {
+						zend_string_release_ex(str, 0);
+						ZVAL_DOUBLE(op, 0.0);
+						return;
+					}
+					ZVAL_DOUBLE(op, zend_strtod(ZSTR_VAL(str), NULL));
+				} else if (UNEXPECTED(trailing_data)) {
+					zend_error(E_DEPRECATED,
+						"Implicit conversion from non-numeric string \"%s\" to float",
+						ZSTR_VAL(str));
+					if (UNEXPECTED(EG(exception))) {
+						zend_string_release_ex(str, 0);
+						ZVAL_DOUBLE(op, 0.0);
+						return;
+					}
+					ZVAL_DOUBLE(op, (type == IS_LONG) ? (double)lval : dval);
+				} else {
+					ZVAL_DOUBLE(op, (type == IS_LONG) ? (double)lval : dval);
+				}
 				zend_string_release_ex(str, 0);
 			}
 			break;
@@ -922,6 +948,13 @@ try_again:
 			}
 			ZEND_FALLTHROUGH;
 		default: {
+			/* Scalar-to-object conversion is deprecated */
+			zend_error(E_DEPRECATED,
+				"Conversion from %s to object is deprecated",
+				zend_zval_type_name(op));
+			if (UNEXPECTED(EG(exception))) {
+				return;
+			}
 			zval tmp;
 			ZVAL_COPY_VALUE(&tmp, op);
 			object_init(op);
@@ -983,9 +1016,27 @@ try_again:
 				uint8_t type;
 				zend_long lval;
 				double dval;
-				if (0 == (type = is_numeric_string(Z_STRVAL_P(op), Z_STRLEN_P(op), &lval, &dval, true))) {
+				bool trailing_data = false;
+				if (0 == (type = is_numeric_string_ex(Z_STRVAL_P(op), Z_STRLEN_P(op), &lval, &dval, true, NULL, &trailing_data))) {
+					/* Fully non-numeric string - emit deprecation */
+					zend_error(E_DEPRECATED,
+						"Implicit conversion from non-numeric string \"%s\" to int",
+						Z_STRVAL_P(op));
+					if (UNEXPECTED(EG(exception))) {
+						return 0;
+					}
 					return 0;
-				} else if (EXPECTED(type == IS_LONG)) {
+				}
+				if (UNEXPECTED(trailing_data)) {
+					/* Partial numeric string - emit deprecation */
+					zend_error(E_DEPRECATED,
+						"Implicit conversion from non-numeric string \"%s\" to int",
+						Z_STRVAL_P(op));
+					if (UNEXPECTED(EG(exception))) {
+						return 0;
+					}
+				}
+				if (EXPECTED(type == IS_LONG)) {
 					return lval;
 				} else {
 					/* Previously we used strtol here, not is_numeric_string,
@@ -1040,7 +1091,39 @@ try_again:
 		case IS_DOUBLE:
 			return Z_DVAL_P(op);
 		case IS_STRING:
-			return zend_strtod(Z_STRVAL_P(op), NULL);
+			{
+				bool trailing_data = false;
+				zend_long lval;
+				double dval;
+				uint8_t type = is_numeric_string_ex(Z_STRVAL_P(op), Z_STRLEN_P(op), &lval, &dval, true, NULL, &trailing_data);
+
+				if (type == 0) {
+					/* Fully non-numeric string - emit deprecation */
+					zend_error(E_DEPRECATED,
+						"Implicit conversion from non-numeric string \"%s\" to float",
+						Z_STRVAL_P(op));
+					if (UNEXPECTED(EG(exception))) {
+						return 0.0;
+					}
+					return zend_strtod(Z_STRVAL_P(op), NULL);
+				}
+				if (UNEXPECTED(trailing_data)) {
+					/* Partial numeric string - emit deprecation */
+					zend_error(E_DEPRECATED,
+						"Implicit conversion from non-numeric string \"%s\" to float",
+						Z_STRVAL_P(op));
+					if (UNEXPECTED(EG(exception))) {
+						return 0.0;
+					}
+				}
+
+				/* Valid numeric string - return the parsed value */
+				if (type == IS_LONG) {
+					return (double)lval;
+				} else {
+					return dval;
+				}
+			}
 		case IS_ARRAY:
 			return zend_hash_num_elements(Z_ARRVAL_P(op)) ? 1.0 : 0.0;
 		case IS_OBJECT:
