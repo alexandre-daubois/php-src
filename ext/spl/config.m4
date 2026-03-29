@@ -8,6 +8,7 @@ PHP_NEW_EXTENSION([spl], m4_normalize([
     spl_functions.c
     spl_heap.c
     spl_iterators.c
+    spl_multimap.c
     spl_observer.c
   ]),
   [no],,
@@ -22,6 +23,7 @@ PHP_INSTALL_HEADERS([ext/spl], m4_normalize([
   spl_functions.h
   spl_heap.h
   spl_iterators.h
+  spl_multimap.h
   spl_observer.h
 ]))
 PHP_ADD_EXTENSION_DEP(spl, pcre, true)
