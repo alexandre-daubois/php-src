@@ -5752,6 +5752,37 @@ ZEND_VM_HANDLER(213, ZEND_SEND_PLACEHOLDER, UNUSED, CONST|UNUSED|NUM)
 	ZEND_VM_NEXT_OPCODE();
 }
 
+/* "$x = f($x, ...)": when f() consumes its first argument, hand the array over
+ * instead of sharing it, so f() can update it in place. $x is overwritten by the
+ * result right after the call, so it is never read in between. */
+ZEND_VM_HOT_HANDLER(214, ZEND_SEND_VAR_MOVE, CV, UNUSED|NUM)
+{
+	USE_OPLINE
+	zval *varptr = EX_VAR(opline->op1.var);
+
+	if (EXPECTED(Z_TYPE_P(varptr) == IS_ARRAY)
+	 && (EX(call)->func->common.fn_flags2 & ZEND_ACC2_CONSUMES_FIRST_ARG)) {
+		ZVAL_COPY_VALUE(ZEND_CALL_VAR(EX(call), opline->result.var), varptr);
+		ZVAL_UNDEF(varptr);
+		ZEND_VM_NEXT_OPCODE();
+	}
+	ZEND_VM_DISPATCH_TO_HANDLER(ZEND_SEND_VAR);
+}
+
+ZEND_VM_HOT_SEND_HANDLER(215, ZEND_SEND_VAR_EX_MOVE, CV, UNUSED|NUM, SPEC(QUICK_ARG))
+{
+	USE_OPLINE
+	zval *varptr = EX_VAR(opline->op1.var);
+
+	if (EXPECTED(Z_TYPE_P(varptr) == IS_ARRAY)
+	 && (EX(call)->func->common.fn_flags2 & ZEND_ACC2_CONSUMES_FIRST_ARG)) {
+		ZVAL_COPY_VALUE(ZEND_CALL_VAR(EX(call), opline->result.var), varptr);
+		ZVAL_UNDEF(varptr);
+		ZEND_VM_NEXT_OPCODE();
+	}
+	ZEND_VM_DISPATCH_TO_HANDLER(ZEND_SEND_VAR_EX);
+}
+
 ZEND_VM_HOT_HANDLER(63, ZEND_RECV, NUM, UNUSED)
 {
 	USE_OPLINE

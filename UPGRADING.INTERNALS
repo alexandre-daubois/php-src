@@ -47,6 +47,10 @@ PHP 8.7 INTERNALS UPGRADE NOTES
 - The INIT_CLASS_ENTRY_INIT_METHODS() macro, which was previously used as
   part of handling disabled classes, was removed following the removal of
   the `disable_classes` INI setting in PHP 8.5.
+- Added the ZEND_ACC2_CONSUMES_FIRST_ARG function flag, set with
+  @consumes-first-arg in stubs. It marks internal functions that run no user
+  code and may update their first argument in place when it is an array
+  nobody else holds.
 
 ========================
 2. Build system changes
@@ -81,6 +85,12 @@ PHP 8.7 INTERNALS UPGRADE NOTES
 ========================
 4. OpCode changes
 ========================
+
+* New ZEND_SEND_VAR_MOVE and ZEND_SEND_VAR_EX_MOVE opcodes are emitted by the
+  optimizer for "$x = f($x, ...)" when $x is not read before being overwritten.
+  They hand $x over to f() instead of sharing it when f() has the
+  ZEND_ACC2_CONSUMES_FIRST_ARG flag, and behave like ZEND_SEND_VAR and
+  ZEND_SEND_VAR_EX otherwise.
 
 ========================
 5. SAPI changes

@@ -3271,6 +3271,15 @@ static zend_always_inline zend_result _zend_update_type_info(
 				UPDATE_SSA_TYPE(tmp, ssa_op->result_def);
 			}
 			break;
+		case ZEND_SEND_VAR_MOVE:
+			/* Moved out when the callee consumes it, left as is otherwise */
+			UPDATE_SSA_TYPE(t1 | MAY_BE_UNDEF, ssa_op->op1_def);
+			break;
+		case ZEND_SEND_VAR_EX_MOVE:
+			/* Moved out (by value), or turned into a reference (by ref) */
+			tmp = MAY_BE_UNDEF|MAY_BE_REF|MAY_BE_RC1|MAY_BE_RCN|MAY_BE_ANY|MAY_BE_ARRAY_KEY_ANY|MAY_BE_ARRAY_OF_ANY|MAY_BE_ARRAY_OF_REF;
+			UPDATE_SSA_TYPE(tmp, ssa_op->op1_def);
+			break;
 		case ZEND_SEND_VAR_EX:
 		case ZEND_SEND_FUNC_ARG:
 			if (ssa_op->op1_def >= 0) {
@@ -4788,6 +4797,7 @@ static void zend_mark_cv_references(const zend_op_array *op_array, const zend_sc
 					case ZEND_BIND_GLOBAL:
 					case ZEND_SEND_REF:
 					case ZEND_SEND_VAR_EX:
+					case ZEND_SEND_VAR_EX_MOVE:
 					case ZEND_SEND_FUNC_ARG:
 					case ZEND_BIND_INIT_STATIC_OR_JMP:
 						break;
@@ -4972,6 +4982,8 @@ ZEND_API bool zend_may_throw_ex(const zend_op *opline, const zend_ssa_op *ssa_op
 				case ZEND_SEND_VAL:
 				case ZEND_SEND_VAL_EX:
 				case ZEND_SEND_VAR:
+				case ZEND_SEND_VAR_MOVE:
+				case ZEND_SEND_VAR_EX_MOVE:
 				case ZEND_SEND_VAR_EX:
 				case ZEND_SEND_FUNC_ARG:
 				case ZEND_SEND_VAR_NO_REF:
@@ -5046,6 +5058,8 @@ ZEND_API bool zend_may_throw_ex(const zend_op *opline, const zend_ssa_op *ssa_op
 			/* Array to array comparison may lead to recursion. */
 			return (t1 & t2) & MAY_BE_ARRAY_OF_ARRAY;
 		case ZEND_SEND_VAR:
+		case ZEND_SEND_VAR_MOVE:
+		case ZEND_SEND_VAR_EX_MOVE:
 		case ZEND_SEND_VAL:
 		case ZEND_SEND_REF:
 		case ZEND_SEND_VAR_EX:

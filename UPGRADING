@@ -134,3 +134,9 @@ PHP 8.7 UPGRADE NOTES
 
 - MBString:
   . Improved performance of mb_strlen for UTF-8 strings.
+
+- Opcache:
+  . Inside functions, "$a = array_merge($a, ...)" and
+    "$a = array_replace($a, ...)" can now update $a in place instead of
+    copying it, which makes building an array this way in a loop linear
+    instead of quadratic.

@@ -1682,6 +1682,7 @@ function array_slice(array $array, int $offset, ?int $length = null, bool $prese
 
 /**
  * @compile-time-eval
+ * @consumes-first-arg
  */
 function array_merge(array ...$arrays): array {}
 
@@ -1692,6 +1693,7 @@ function array_merge_recursive(array ...$arrays): array {}
 
 /**
  * @compile-time-eval
+ * @consumes-first-arg
  */
 function array_replace(array $array, array ...$replacements): array {}
 

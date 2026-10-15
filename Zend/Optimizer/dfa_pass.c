@@ -1057,6 +1057,94 @@ static bool zend_dfa_try_to_replace_result(const zend_op_array *op_array, const 
 	return false;
 }
 
+static bool zend_dfa_op_uses_cv(const zend_op *opline, uint32_t var)
+{
+	return (opline->op1_type == IS_CV && opline->op1.var == var)
+		|| (opline->op2_type == IS_CV && opline->op2.var == var)
+		|| (opline->result_type == IS_CV && opline->result.var == var);
+}
+
+/* "$x = f($x, ...)": $x is overwritten by the call's result right after the call,
+ * so its array can be handed over to f() when f() consumes its first argument. The
+ * VM checks the callee at run time, the optimizer only proves $x isn't read before
+ * being overwritten, even when an exception is thrown in between. */
+static void zend_dfa_mark_consumed_sends(zend_op_array *op_array, const zend_ssa *ssa)
+{
+	/* Globals stay visible elsewhere, a catch could read $x after a throw, and
+	 * parameters show up in backtraces while the call runs */
+	if (!op_array->function_name
+	 || op_array->last_try_catch
+	 || (ssa->cfg.flags & ZEND_FUNC_INDIRECT_VAR_ACCESS)) {
+		return;
+	}
+	uint32_t num_params = op_array->num_args + !!(op_array->fn_flags & ZEND_ACC_VARIADIC);
+
+	for (uint32_t i = 0; i < op_array->last; i++) {
+		zend_op *send = &op_array->opcodes[i];
+
+		if ((send->opcode != ZEND_SEND_VAR && send->opcode != ZEND_SEND_VAR_EX)
+		 || send->op1_type != IS_CV
+		 || send->op2_type != IS_UNUSED
+		 || send->op2.num != 1
+		 || EX_VAR_TO_NUM(send->op1.var) < num_params) {
+			continue;
+		}
+
+		uint32_t level = 0;
+		uint32_t j;
+		for (j = i + 1; j < op_array->last; j++) {
+			const zend_op *opline = &op_array->opcodes[j];
+			if (zend_dfa_op_uses_cv(opline, send->op1.var)) {
+				break;
+			}
+			switch (opline->opcode) {
+				case ZEND_INIT_FCALL:
+				case ZEND_INIT_FCALL_BY_NAME:
+				case ZEND_INIT_NS_FCALL_BY_NAME:
+				case ZEND_INIT_METHOD_CALL:
+				case ZEND_INIT_STATIC_METHOD_CALL:
+				case ZEND_INIT_PARENT_PROPERTY_HOOK_CALL:
+				case ZEND_INIT_DYNAMIC_CALL:
+				case ZEND_INIT_USER_CALL:
+				case ZEND_NEW:
+					level++;
+					continue;
+				case ZEND_DO_FCALL:
+				case ZEND_DO_ICALL:
+				case ZEND_DO_UCALL:
+				case ZEND_DO_FCALL_BY_NAME:
+				case ZEND_CALLABLE_CONVERT:
+				case ZEND_CALLABLE_CONVERT_PARTIAL:
+					if (level) {
+						level--;
+						continue;
+					}
+					break;
+				default:
+					continue;
+			}
+			break;
+		}
+		if (j + 1 >= op_array->last
+		 || (op_array->opcodes[j].opcode != ZEND_DO_FCALL
+		  && op_array->opcodes[j].opcode != ZEND_DO_ICALL
+		  && op_array->opcodes[j].opcode != ZEND_DO_FCALL_BY_NAME)) {
+			continue;
+		}
+		const zend_op *call = &op_array->opcodes[j];
+		const zend_op *assign = call + 1;
+		if (!(call->result_type & (IS_VAR|IS_TMP_VAR))
+		 || assign->opcode != ZEND_ASSIGN
+		 || assign->op1_type != IS_CV
+		 || assign->op1.var != send->op1.var
+		 || assign->op2_type != call->result_type
+		 || assign->op2.var != call->result.var) {
+			continue;
+		}
+		send->opcode = send->opcode == ZEND_SEND_VAR ? ZEND_SEND_VAR_MOVE : ZEND_SEND_VAR_EX_MOVE;
+	}
+}
+
 void zend_dfa_optimize_op_array(zend_op_array *op_array, zend_optimizer_ctx *ctx, zend_ssa *ssa, zend_call_info **call_map)
 {
 	if (ctx->debug_level & ZEND_DUMP_BEFORE_DFA_PASS) {
@@ -1678,6 +1766,8 @@ void zend_dfa_optimize_op_array(zend_op_array *op_array, zend_optimizer_ctx *ctx
 			ssa_verify_integrity(op_array, ssa, "after nop");
 #endif
 		}
+
+		zend_dfa_mark_consumed_sends(op_array, ssa);
 	}
 
 	if (ctx->debug_level & ZEND_DUMP_AFTER_DFA_PASS) {

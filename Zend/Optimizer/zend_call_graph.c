@@ -137,6 +137,8 @@ ZEND_API void zend_analyze_calls(zend_arena **arena, zend_script *script, uint32
 				break;
 			case ZEND_SEND_VAL:
 			case ZEND_SEND_VAR:
+			case ZEND_SEND_VAR_MOVE:
+			case ZEND_SEND_VAR_EX_MOVE:
 			case ZEND_SEND_VAL_EX:
 			case ZEND_SEND_VAR_EX:
 			case ZEND_SEND_FUNC_ARG:

@@ -1359,6 +1359,7 @@ class FuncInfo {
         private readonly bool $isDeprecated,
         private bool $supportsCompileTimeEval,
         private bool $forbidDynamicCalls,
+        private bool $consumesFirstArg,
         public readonly bool $verify,
         public /* readonly */ array $args,
         public /* readonly */ ReturnInfo $return,
@@ -1671,6 +1672,10 @@ class FuncInfo {
 
         if ($this->forbidDynamicCalls) {
             $flags->addForVersionsAbove("ZEND_ACC2_FORBID_DYN_CALLS", PHP_86_VERSION_ID);
+        }
+
+        if ($this->consumesFirstArg) {
+            $flags->addForVersionsAbove("ZEND_ACC2_CONSUMES_FIRST_ARG", PHP_86_VERSION_ID);
         }
 
         return $flags;
@@ -4960,6 +4965,7 @@ function parseFunctionLike(
         $isDeprecated = false;
         $supportsCompileTimeEval = false;
         $forbidDynamicCalls = false;
+        $consumesFirstArg = false;
         $verify = true;
         $docReturnType = null;
         $tentativeReturnType = false;
@@ -4976,6 +4982,7 @@ function parseFunctionLike(
             $tentativeReturnType = array_key_exists('tentative-return-type', $tagMap);
             $supportsCompileTimeEval = array_key_exists('compile-time-eval', $tagMap);
             $forbidDynamicCalls = array_key_exists('forbid-dynamic-calls', $tagMap);
+            $consumesFirstArg = array_key_exists('consumes-first-arg', $tagMap);
             $isUndocumentable = $isUndocumentable || array_key_exists('undocumentable', $tagMap);
 
             foreach ($tags as $tag) {
@@ -5109,6 +5116,7 @@ function parseFunctionLike(
             $isDeprecated,
             $supportsCompileTimeEval,
             $forbidDynamicCalls,
+            $consumesFirstArg,
             $verify,
             $args,
             $return,

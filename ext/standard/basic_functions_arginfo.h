@@ -1,5 +1,5 @@
 /* This is a generated file, edit basic_functions.stub.php instead.
- * Stub hash: 1e7c1c8937b439ecab1343a0e78a6092bcbbb0fc
+ * Stub hash: e4557c3ee8c260ed095f138c8015bf8953a2ed18
  * Has decl header: yes */
 
 #include "zend_attributes.h"
@@ -3016,9 +3016,17 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(array_unshift, arginfo_array_unshift)
 	ZEND_FE(array_splice, arginfo_array_splice)
 	ZEND_RAW_FENTRY("array_slice", zif_array_slice, arginfo_array_slice, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
+#if (PHP_VERSION_ID >= 80600)
+	ZEND_RAW_FENTRY("array_merge", zif_array_merge, arginfo_array_merge, ZEND_FENTRY_FLAGS(ZEND_ACC_COMPILE_TIME_EVAL, ZEND_ACC2_CONSUMES_FIRST_ARG), NULL, NULL)
+#elif (PHP_VERSION_ID >= 80400)
 	ZEND_RAW_FENTRY("array_merge", zif_array_merge, arginfo_array_merge, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
+#endif
 	ZEND_RAW_FENTRY("array_merge_recursive", zif_array_merge_recursive, arginfo_array_merge_recursive, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
+#if (PHP_VERSION_ID >= 80600)
+	ZEND_RAW_FENTRY("array_replace", zif_array_replace, arginfo_array_replace, ZEND_FENTRY_FLAGS(ZEND_ACC_COMPILE_TIME_EVAL, ZEND_ACC2_CONSUMES_FIRST_ARG), NULL, NULL)
+#elif (PHP_VERSION_ID >= 80400)
 	ZEND_RAW_FENTRY("array_replace", zif_array_replace, arginfo_array_replace, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
+#endif
 	ZEND_RAW_FENTRY("array_replace_recursive", zif_array_replace_recursive, arginfo_array_replace_recursive, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
 	ZEND_RAW_FENTRY("array_keys", zif_array_keys, arginfo_array_keys, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)
 	ZEND_RAW_FENTRY("array_key_first", zif_array_key_first, arginfo_array_key_first, ZEND_ACC_COMPILE_TIME_EVAL, NULL, NULL)

@@ -4730,6 +4730,8 @@ static void zend_unfinished_calls_gc(zend_execute_data *execute_data, zend_execu
 				case ZEND_SEND_VAL_EX:
 				case ZEND_SEND_VAR:
 				case ZEND_SEND_VAR_EX:
+				case ZEND_SEND_VAR_MOVE:
+				case ZEND_SEND_VAR_EX_MOVE:
 				case ZEND_SEND_FUNC_ARG:
 				case ZEND_SEND_REF:
 				case ZEND_SEND_VAR_NO_REF:
@@ -4869,6 +4871,8 @@ static void cleanup_unfinished_calls(zend_execute_data *execute_data, uint32_t o
 					case ZEND_SEND_VAL_EX:
 					case ZEND_SEND_VAR:
 					case ZEND_SEND_VAR_EX:
+					case ZEND_SEND_VAR_MOVE:
+					case ZEND_SEND_VAR_EX_MOVE:
 					case ZEND_SEND_FUNC_ARG:
 					case ZEND_SEND_REF:
 					case ZEND_SEND_VAR_NO_REF:

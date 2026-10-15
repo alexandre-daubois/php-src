@@ -307,6 +307,8 @@ static int zend_jit_needs_call_chain(zend_call_info *call_info, uint32_t b, cons
 					case ZEND_SEND_VAR:
 					case ZEND_SEND_VAL_EX:
 					case ZEND_SEND_VAR_EX:
+					case ZEND_SEND_VAR_MOVE:
+					case ZEND_SEND_VAR_EX_MOVE:
 					case ZEND_SEND_FUNC_ARG:
 					case ZEND_SEND_REF:
 					case ZEND_SEND_VAR_NO_REF:
@@ -345,6 +347,8 @@ static int zend_jit_needs_call_chain(zend_call_info *call_info, uint32_t b, cons
 				case ZEND_SEND_VAR:
 				case ZEND_SEND_VAL_EX:
 				case ZEND_SEND_VAR_EX:
+				case ZEND_SEND_VAR_MOVE:
+				case ZEND_SEND_VAR_EX_MOVE:
 				case ZEND_SEND_FUNC_ARG:
 				case ZEND_SEND_REF:
 				case ZEND_SEND_VAR_NO_REF:
@@ -419,6 +423,8 @@ static int zend_jit_needs_call_chain(zend_call_info *call_info, uint32_t b, cons
 					case ZEND_SEND_VAR:
 					case ZEND_SEND_VAL_EX:
 					case ZEND_SEND_VAR_EX:
+					case ZEND_SEND_VAR_MOVE:
+					case ZEND_SEND_VAR_EX_MOVE:
 					case ZEND_SEND_FUNC_ARG:
 					case ZEND_SEND_REF:
 					case ZEND_SEND_VAR_NO_REF:
